@@ -1,147 +1,96 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Material Tracker</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <title>Material Register</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     .hidden { display: none; }
-    form { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 10px; }
-    input, select { margin: 5px 0; padding: 8px; width: 95%; }
-    button { padding: 10px 20px; margin-top: 10px; }
+    input, button { margin: 5px; padding: 8px; }
+    h2 { color: #2c3e50; }
   </style>
 </head>
 <body>
-  <h1>Material Tracker</h1>
+  <h1>Material Register</h1>
 
-  <!-- Google Sign-In button -->
-<div id="g_id_onload"
-     data-client_id="YOUR_GOOGLE_CLIENT_ID"
-     data-callback="handleCredentialResponse"
-     data-auto_prompt="false">
-</div>
-
-<div class="g_id_signin"
-     data-type="standard"
-     data-size="large"
-     data-theme="outline"
-     data-text="continue_with"
-     data-shape="rectangular"
-     data-logo_alignment="left"
-     data-context="signin"
-     data-itp_support="true">
-</div>
-
-
-  <!-- Welcome message -->
-  <div id="welcome" class="hidden">
-    <p>Welcome, <span id="userEmail"></span></p>
+  <!-- LOGIN -->
+  <div id="loginForm">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
+    <p id="loginMsg"></p>
   </div>
 
-  <!-- Inflow form -->
-  <form id="inflowForm" class="hidden">
+  <!-- ENTRY FORMS -->
+  <div id="entryForms" class="hidden">
     <h2>Inflow Entry</h2>
-    <label>Date:</label>
-    <input type="date" id="inflowDate" required>
-    <label>Item:</label>
-    <select id="inflowItem" required>
-      <option value="">Select Item</option>
-      <option>Apples</option>
-      <option>Bananas</option>
-      <option>Cherries</option>
-      <option>Jams</option>
-      <option>Yams</option>
-    </select>
-    <label>Quantity:</label>
-    <input type="number" id="inflowQty" required>
-    <button type="submit">Submit Inflow</button>
-  </form>
+    <input type="text" id="inItem" placeholder="Item"><br>
+    <input type="number" id="inQty" placeholder="Quantity"><br>
+    <input type="number" id="inPrice" placeholder="Price"><br>
+    <button onclick="submitInflow()">Submit Inflow</button>
+    <p id="inMsg"></p>
 
-  <!-- Outflow form -->
-  <form id="outflowForm" class="hidden">
     <h2>Outflow Entry</h2>
-    <label>Date:</label>
-    <input type="date" id="outflowDate" required>
-    <label>Item:</label>
-    <select id="outflowItem" required>
-      <option value="">Select Item</option>
-      <option>Apples</option>
-      <option>Bananas</option>
-      <option>Cherries</option>
-      <option>Jams</option>
-      <option>Yams</option>
-    </select>
-    <label>Quantity:</label>
-    <input type="number" id="outflowQty" required>
-    <label>Recipient:</label>
-    <input type="text" id="outflowRecipient" required>
-    <button type="submit">Submit Outflow</button>
-  </form>
+    <input type="text" id="outItem" placeholder="Item"><br>
+    <input type="number" id="outQty" placeholder="Quantity"><br>
+    <input type="text" id="outRecipient" placeholder="Recipient"><br>
+    <button onclick="submitOutflow()">Submit Outflow</button>
+    <p id="outMsg"></p>
+  </div>
 
   <script>
-    let currentUser = null;
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw18WtPw-q09UWgEJAnIJZvppHyLGNICIgAgnnhC_ROSZ4kaOcVj6GBpaMyUZgU6wfp/exec"; // Replace with Apps Script web app URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxD_e07YnoNuEqU98oJTTelU55xnRUJiVMuWjP_dBaZHAtL6Y8DtGzOlpr5r1nq6U4/exec"; // replace after deploy
 
-    // Handle Google login
-    function handleCredentialResponse(response) {
-      const data = parseJwt(response.credential);
-      currentUser = data.email;
-      document.getElementById("userEmail").textContent = currentUser;
-      document.getElementById("welcome").classList.remove("hidden");
-      document.getElementById("inflowForm").classList.remove("hidden");
-      document.getElementById("outflowForm").classList.remove("hidden");
-    }
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
 
-    // Decode JWT token (from Google login)
-    function parseJwt(token) {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload);
-    }
-
-    // Submit inflow form
-    document.getElementById("inflowForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const payload = {
-        type: "inflow",
-        user: currentUser,
-        date: document.getElementById("inflowDate").value,
-        item: document.getElementById("inflowItem").value,
-        quantity: document.getElementById("inflowQty").value,
-        recipient: "" // no recipient for inflow
-      };
-      await sendData(payload);
-      alert("Inflow entry submitted!");
-      e.target.reset();
-    });
-
-    // Submit outflow form
-    document.getElementById("outflowForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const payload = {
-        type: "outflow",
-        user: currentUser,
-        date: document.getElementById("outflowDate").value,
-        item: document.getElementById("outflowItem").value,
-        quantity: document.getElementById("outflowQty").value,
-        recipient: document.getElementById("outflowRecipient").value
-      };
-      await sendData(payload);
-      alert("Outflow entry submitted!");
-      e.target.reset();
-    });
-
-    // Send data to Apps Script
-    async function sendData(payload) {
-      const res = await fetch(WEB_APP_URL, {
+      fetch(API_URL, {
         method: "POST",
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ action: "login", username, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem("user", data.user);
+          document.getElementById("loginForm").classList.add("hidden");
+          document.getElementById("entryForms").classList.remove("hidden");
+        } else {
+          document.getElementById("loginMsg").innerText = data.message;
+        }
       });
-      return res.json();
+    }
+
+    function submitInflow() {
+      const user = localStorage.getItem("user");
+      const item = document.getElementById("inItem").value;
+      const quantity = document.getElementById("inQty").value;
+      const price = document.getElementById("inPrice").value;
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "inflow", user, item, quantity, price })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("inMsg").innerText = data.message;
+      });
+    }
+
+    function submitOutflow() {
+      const user = localStorage.getItem("user");
+      const item = document.getElementById("outItem").value;
+      const quantity = document.getElementById("outQty").value;
+      const recipient = document.getElementById("outRecipient").value;
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "outflow", user, item, quantity, recipient })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("outMsg").innerText = data.message;
+      });
     }
   </script>
 </body>

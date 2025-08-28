@@ -2,266 +2,410 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Inventory — Inflow/Outflow</title>
+  <title>Inventory — Smart Inflow/Outflow</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{--accent:#0ea5e9;--card:#fff;--bg:#f3f7fb}
-    body{font-family:Inter,system-ui,Arial;background:var(--bg);margin:0;padding:24px;color:#0f172a}
-    .container{max-width:980px;margin:0 auto}
-    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 20px rgba(2,6,23,0.06);margin-bottom:18px}
-    h1{margin:0 0 8px;font-size:20px}
-    label{display:block;margin-top:8px;font-size:13px;color:#334155}
-    input[type=text], input[type=number], input[type=date], select, button {
-      width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;margin-top:6px;
+    :root{
+      --bg:#f5f8fb; --card:#ffffff; --accent:#06b6d4; --muted:#64748b;
+      --success:#10b981; --danger:#ef4444;
     }
-    button { background:var(--accent); color:#fff; border:0; cursor:pointer; font-weight:600 }
-    .small{font-size:13px;color:#475569}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-    .receiver-row{display:grid;grid-template-columns:1fr 1fr 120px;gap:8px;margin-bottom:8px}
-    .muted{color:#64748b;font-size:13px}
-    .btn-secondary{background:#e6eef6;color:#0369a1;border:0}
-    .row {display:flex;gap:8px}
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Arial;background:var(--bg);color:#0f172a;margin:0;padding:18px}
+    .wrap{max-width:1100px;margin:0 auto}
+    header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+    h1{font-size:20px;margin:0}
+    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.06);margin-bottom:14px}
+    label{display:block;font-size:13px;color:var(--muted);margin-top:10px}
+    input[type=text], input[type=number], input[type=date], select, button {
+      width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef6;margin-top:6px;font-size:14px;
+    }
+    .row {display:flex; gap:10px}
+    .col {flex:1}
+    .btn {background:var(--accent);color:#fff;border:0;padding:10px 12px;border-radius:8px;cursor:pointer}
+    .btn.secondary {background:#eef2f7;color:#0369a1}
+    .muted {color:var(--muted);font-size:13px}
+    .grid-2 {display:grid;grid-template-columns:1fr 420px; gap:14px}
+    .small {font-size:13px;color:#475569}
+    .receiver-row{display:grid;grid-template-columns:1fr 1fr 100px;gap:8px;margin-bottom:8px;align-items:center}
+    .actions{display:flex;gap:8px;margin-top:12px}
+    .admin-area{max-height:400px;overflow:auto}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;border-bottom:1px solid #f1f5f9;text-align:left;font-size:13px}
+    .pill {display:inline-block;padding:4px 8px;border-radius:999px;background:#f1faff;color:#0369a1;font-size:12px}
+    .flex-right{display:flex;justify-content:flex-end;gap:8px}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
+    @media (max-width:900px){.grid-2{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="card">
-      <h1>Inventory — Login</h1>
-      <div class="small">Use your username & password to access forms</div>
-      <label>Username</label><input id="username" type="text" placeholder="username">
-      <label>Password</label><input id="password" type="password" placeholder="password">
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button id="btnLogin">Login</button>
-        <button id="btnLogout" class="btn-secondary" style="display:none">Logout</button>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Inventory Manager</h1>
+        <div class="small">Multi-item requests + approval workflow</div>
       </div>
-      <p id="loginMsg" class="muted"></p>
+      <div class="flex-right">
+        <div id="sessionInfo" class="muted">Not logged</div>
+      </div>
+    </header>
+
+    <!-- LOGIN CARD -->
+    <div class="card" id="loginCard">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong>Sign in</strong> <span class="muted">(simple local auth)</span></div>
+        <div>
+          <button id="btnLogout" class="btn secondary" style="display:none">Logout</button>
+        </div>
+      </div>
+
+      <div style="margin-top:12px;display:flex;gap:10px">
+        <input id="loginUser" type="text" placeholder="username" style="flex:1">
+        <input id="loginPass" type="password" placeholder="password" style="flex:1">
+        <button id="btnLogin" class="btn">Login</button>
+      </div>
+      <div id="loginMsg" class="muted" style="margin-top:8px"></div>
     </div>
 
-    <div id="formsArea" style="display:none">
-      <!-- Add Item -->
+    <div id="mainArea" style="display:none">
       <div class="card">
-        <h1 style="font-size:16px">Items</h1>
-        <div class="small">Add new item to dropdown</div>
-        <div class="row" style="margin-top:8px">
-          <input id="newItem" type="text" placeholder="New item name">
-          <button id="btnAddItem" class="btn-secondary" style="width:180px">Add Item</button>
+        <div class="row" style="align-items:center">
+          <div class="col">
+            <strong>Items</strong>
+            <div class="muted">Add to the master items list so dropdowns update</div>
+          </div>
+          <div style="width:320px">
+            <div style="display:flex;gap:8px">
+              <input id="newItemInput" type="text" placeholder="New item name">
+              <button id="btnAddItem" class="btn secondary">Add</button>
+            </div>
+            <div id="addItemMsg" class="muted" style="margin-top:8px"></div>
+          </div>
         </div>
-        <p id="addItemMsg" class="muted"></p>
       </div>
 
-      <div class="grid">
-        <!-- Inflow card -->
-        <div class="card">
-          <h1 style="font-size:16px">➕ Inflow</h1>
-          <label>Date</label>
-          <input id="inDate" type="date">
-          <label>Item</label>
-          <select id="inItem"><option value="">Loading…</option></select>
-          <label>Quantity</label>
-          <input id="inQty" type="number" min="1" placeholder="e.g. 50">
-          <label>Vendor</label>
-          <input id="inVendor" type="text" placeholder="Vendor name">
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button id="btnSaveInflow">Save Inflow</button>
-            <button id="btnClearIn" class="btn-secondary">Clear</button>
+      <div class="grid-2">
+        <!-- LEFT: Forms -->
+        <div>
+
+          <!-- Inflow card -->
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><strong>Inflow — add multiple items</strong><div class="muted">Add many items in one request</div></div>
+              <div class="pill">Inflow</div>
+            </div>
+
+            <label>Request Date (default: today)</label>
+            <input id="inRequestDate" type="date">
+
+            <div id="inflowRows" style="margin-top:12px"></div>
+
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <button id="btnAddInRow" class="btn secondary">+ Add Item Row</button>
+              <button id="btnSaveInflow" class="btn">Submit Request</button>
+            </div>
+            <div id="inMsg" class="muted" style="margin-top:8px"></div>
           </div>
-          <p id="inMsg" class="muted"></p>
+
+          <!-- Outflow card -->
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><strong>Outflow — distribute to multiple receivers</strong><div class="muted">Enter total moved and split among receivers</div></div>
+              <div class="pill">Outflow</div>
+            </div>
+
+            <label>Request Date</label>
+            <input id="outRequestDate" type="date">
+
+            <label style="margin-top:10px">Item</label>
+            <select id="outSelectItem"><option>Loading…</option></select>
+
+            <label>Total Quantity</label>
+            <input id="outTotalQty" type="number" min="1">
+
+            <h4 style="margin-top:10px">Receivers (double-click a row to remove)</h4>
+            <div id="receiversBox"></div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button id="btnAddReceiver" class="btn secondary">+ Add Receiver</button>
+              <button id="btnSaveOutflow" class="btn">Submit Request</button>
+            </div>
+            <div id="outMsg" class="muted" style="margin-top:8px"></div>
+          </div>
+
         </div>
 
-        <!-- Outflow card -->
-        <div class="card">
-          <h1 style="font-size:16px">➖ Outflow (distribute)</h1>
-          <label>Date</label>
-          <input id="outDate" type="date">
-          <label>Item</label>
-          <select id="outItem"><option value="">Loading…</option></select>
-          <label>Total Quantity being moved</label>
-          <input id="outTotalQty" type="number" min="1" placeholder="e.g. 100">
+        <!-- RIGHT: Admin panel & Pending -->
+        <div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><strong>Pending Requests</strong><div class="muted">Admins: approve or reject</div></div>
+              <div><button id="btnRefreshPending" class="btn secondary">Refresh</button></div>
+            </div>
 
-          <h3 style="margin-top:12px;font-size:14px">Distribute to receivers</h3>
-          <div id="receiversContainer"></div>
-          <div style="display:flex;gap:8px;margin-top:8px">
-            <button id="btnAddReceiver" class="btn-secondary" type="button">+ Add Receiver</button>
-            <button id="btnClearReceivers" class="btn-secondary" type="button">Clear Receivers</button>
+            <div id="pendingArea" class="admin-area" style="margin-top:12px">No data loaded</div>
           </div>
 
-          <div style="display:flex;gap:8px;margin-top:12px">
-            <button id="btnSaveOutflow">Save Outflow</button>
-            <button id="btnClearOut" class="btn-secondary">Clear</button>
+          <div class="card">
+            <strong>Quick actions</strong>
+            <div style="margin-top:10px" class="muted">Admins can click approve/reject. Non-admins see nothing here.</div>
           </div>
-          <p id="outMsg" class="muted"></p>
         </div>
       </div>
     </div>
+
+    <footer>Made fast — use responsibly. Simple auth is NOT production-grade.</footer>
   </div>
 
 <script>
-  // ================= CONFIG =================
-  const API_URL = "https://script.google.com/macros/s/AKfycbwTC9FOmWeXouYbRajp2duTVkvDhNDsUtiL6Jfjbc7Mu-vrenvzZB8HdXm8HXMcv5G4/exec"; // <-- REPLACE with your Apps Script Web App URL
-  // ==========================================
+  // ======== CONFIG - set your web app url ========
+  const API_URL = "https://script.google.com/macros/s/AKfycbwjUw4zUsLZRhPtwFiPDufZI-kdDLDSn2nVqV-AbcIW12EFo7fC0e0WQ6dYvamOqnBb/exec"; // <-- replace with Apps Script Web App URL
+  // ==============================================
 
-  // small helpers
-  function el(id){ return document.getElementById(id); }
-  function showMsg(id, text, isError){ const p = el(id); p.textContent = text || ''; p.style.color = isError ? '#b91c1c' : '#0f172a'; }
+  // DOM helpers
+  const $ = id => document.getElementById(id);
+  function showMsg(id, txt, err=false){ const el = $(id); el.textContent = txt||''; el.style.color = err? 'var(--danger)' : ''; }
 
-  // ---------- login ----------
-  el('btnLogin').addEventListener('click', async () => {
-    const username = el('username').value.trim();
-    const password = el('password').value;
-    if (!username || !password) { showMsg('loginMsg','Enter username and password', true); return; }
-    showMsg('loginMsg','Checking...');
-    const res = await post({ action: 'login', username, password });
-    if (res && res.success) {
-      // save session info in sessionStorage (simple)
-      sessionStorage.setItem('username', username);
-      sessionStorage.setItem('password', password);
-      showMsg('loginMsg','Logged in as ' + username);
-      el('btnLogin').style.display = 'none'; el('btnLogout').style.display = 'inline-block';
-      el('formsArea').style.display = 'block';
-      loadItems(); // populate dropdowns
-    } else {
-      showMsg('loginMsg', res && res.error ? res.error : 'Login failed', true);
-    }
-  });
+  // session
+  function setSession(user, pass){
+    sessionStorage.setItem('inv_user', user);
+    sessionStorage.setItem('inv_pass', pass);
+    $('sessionInfo').textContent = 'Signed in as '+user;
+    $('btnLogout').style.display='inline-block';
+    $('btnLogin').style.display='none';
+    $('loginCard').style.display='none';
+    $('mainArea').style.display='block';
+  }
+  function clearSession(){
+    sessionStorage.removeItem('inv_user'); sessionStorage.removeItem('inv_pass');
+    $('sessionInfo').textContent = 'Not logged';
+    $('btnLogout').style.display='none';
+    $('btnLogin').style.display='inline-block';
+    $('loginCard').style.display='block';
+    $('mainArea').style.display='none';
+  }
+  function getSession(){ return { user: sessionStorage.getItem('inv_user'), pass: sessionStorage.getItem('inv_pass') }; }
 
-  el('btnLogout').addEventListener('click', () => {
-    sessionStorage.removeItem('username'); sessionStorage.removeItem('password');
-    el('formsArea').style.display = 'none';
-    el('btnLogin').style.display = 'inline-block'; el('btnLogout').style.display = 'none';
-    showMsg('loginMsg','Logged out');
-  });
-
-  // ---------- POST helper (use text/plain to avoid preflight) ----------
-  async function post(payload) {
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' }, // avoids preflight
-        body: JSON.stringify(payload)
-      });
+  // POST helper (use text/plain to avoid preflight)
+  async function post(payload){
+    try{
+      const res = await fetch(API_URL, { method:'POST', headers: {'Content-Type':'text/plain'}, body: JSON.stringify(payload) });
       return await res.json();
-    } catch (err) {
-      return { success: false, error: String(err) };
-    }
+    } catch(e){ return { success:false, error:String(e) }; }
   }
+  async function get(url){ try{ const r = await fetch(url); return await r.json(); } catch(e){ return { success:false, error:String(e) }; } }
 
-  // ---------- load items ----------
+  // login flow
+  $('btnLogin').addEventListener('click', async ()=>{
+    const u = $('loginUser').value.trim(), p = $('loginPass').value;
+    if(!u||!p){ showMsg('loginMsg','Enter credentials',true); return; }
+    showMsg('loginMsg','Signing in...');
+    const out = await post({ action:'login', username:u, password:p });
+    if(out && out.success){ setSession(u,p); showMsg('loginMsg','Welcome '+u); await loadItems(); refreshPendingIfAdmin(); } 
+    else showMsg('loginMsg', out.error || 'Login failed', true);
+  });
+  $('btnLogout').addEventListener('click', ()=>{ clearSession(); showMsg('loginMsg','Logged out'); });
+
+  // add item
+  $('btnAddItem').addEventListener('click', async ()=>{
+    const item = $('newItemInput').value.trim();
+    if(!item){ showMsg('addItemMsg','Enter item name', true); return; }
+    const s = getSession();
+    const out = await post({ action:'addItem', itemName: item, username:s.user, password:s.pass });
+    if(out && out.success){ showMsg('addItemMsg','Added'); $('newItemInput').value=''; loadItems(); } else showMsg('addItemMsg', out.error || 'Error', true);
+  });
+
+  // load items into dropdowns
   async function loadItems(){
-    try {
-      const r = await fetch(API_URL + '?action=getItems');
-      const j = await r.json();
-      const items = (j && j.items) ? j.items : [];
-      const inS = el('inItem'); const outS = el('outItem');
-      inS.innerHTML = '<option value="">Select item</option>';
-      outS.innerHTML = '<option value="">Select item</option>';
-      items.forEach(it => {
-        const o1 = document.createElement('option'); o1.value = it; o1.textContent = it; inS.appendChild(o1);
-        const o2 = document.createElement('option'); o2.value = it; o2.textContent = it; outS.appendChild(o2);
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    const res = await get(API_URL + '?action=getItems');
+    const items = (res && res.items) ? res.items : [];
+    const inflowContainer = $('inflowRows');
+    const inSelects = [document.createElement('select')]; // not used
+    const outSel = $('outSelectItem');
+    outSel.innerHTML = '<option value="">Select item</option>';
+    items.forEach(it => {
+      const opt = document.createElement('option'); opt.value = it; opt.textContent = it;
+      outSel.appendChild(opt);
+    });
+    // also update inflow rows' item selects if present
+    document.querySelectorAll('.in-item-select').forEach(sel=>{
+      sel.innerHTML = '<option value="">Select item</option>';
+      items.forEach(it=>{ const o=document.createElement('option'); o.value=it; o.textContent=it; sel.appendChild(o); });
+    });
   }
 
-  // ---------- add new item ----------
-  el('btnAddItem').addEventListener('click', async () => {
-    const itemName = el('newItem').value.trim();
-    if (!itemName) { showMsg('addItemMsg','Enter an item name', true); return; }
-    const username = sessionStorage.getItem('username'); const password = sessionStorage.getItem('password');
-    const res = await post({ action: 'addItem', itemName, username, password });
-    if (res && res.success) {
-      showMsg('addItemMsg','Item added');
-      el('newItem').value = '';
-      loadItems();
-    } else {
-      showMsg('addItemMsg', res && res.error ? res.error : 'Error adding item', true);
-    }
-  });
+  // Init: create 1 inflow row
+  function createInflowRow(defaults){
+    const d = defaults||{};
+    const container = $('inflowRows');
+    const div = document.createElement('div'); div.className='receiver-row';
+    div.innerHTML = `
+      <input class="in-date" type="date" value="${d.date||''}" >
+      <select class="in-item in-item-select"><option>Loading…</option></select>
+      <input class="in-qty" type="number" min="1" placeholder="Qty" value="${d.quantity||''}">
+    `;
+    container.appendChild(div);
+    // populate items on loadItems
+    loadItems();
+  }
 
-  // ---------- Inflow submit ----------
-  el('btnSaveInflow').addEventListener('click', async () => {
-    const date = el('inDate').value;
-    const item = el('inItem').value;
-    const qty = Number(el('inQty').value);
-    const vendor = el('inVendor').value || '';
-    if (!date || !item || !qty || qty <= 0) { showMsg('inMsg','Enter date, item and positive quantity', true); return; }
-    const username = sessionStorage.getItem('username'), password = sessionStorage.getItem('password');
-    const res = await post({
-      action: 'inflow',
-      date, item, quantity: qty, vendor, username, password
-    });
-    if (res && res.success) {
-      showMsg('inMsg','Inflow saved ✔');
-      el('inDate').value=''; el('inItem').value=''; el('inQty').value=''; el('inVendor').value='';
-    } else {
-      showMsg('inMsg',res && res.error ? res.error : 'Error saving', true);
-    }
-  });
+  $('btnAddInRow').addEventListener('click', ()=> createInflowRow());
 
-  el('btnClearIn').addEventListener('click', ()=>{ el('inDate').value=''; el('inItem').value=''; el('inQty').value=''; el('inVendor').value=''; showMsg('inMsg',''); });
-
-  // ---------- Receivers UI helpers ----------
-  function addReceiverRow(defaults) {
-    const d = defaults || {};
-    const div = document.createElement('div');
-    div.className = 'receiver-row';
+  // Receivers for outflow
+  function addReceiver(defaults){
+    const d = defaults||{};
+    const div = document.createElement('div'); div.className='receiver-row';
     div.innerHTML = `
       <input class="r-name" placeholder="Receiver" value="${d.receiver||''}">
       <input class="r-location" placeholder="Location" value="${d.location||''}">
-      <input class="r-qty" type="number" min="1" placeholder="Qty" style="padding:8px;">
+      <input class="r-qty" type="number" min="1" placeholder="Qty" value="${d.quantity||''}">
     `;
-    // right-click remove: add small remove on long press? simpler: double-click to remove
-    div.addEventListener('dblclick', () => div.remove());
-    el('receiversContainer').appendChild(div);
+    // double-click to remove
+    div.addEventListener('dblclick', ()=>div.remove());
+    $('receiversBox').appendChild(div);
     return div;
   }
+  $('btnAddReceiver').addEventListener('click', ()=> addReceiver());
 
-  el('btnAddReceiver').addEventListener('click', ()=> addReceiverRow());
-  el('btnClearReceivers').addEventListener('click', ()=> { el('receiversContainer').innerHTML = ''; });
-
-  // ---------- Outflow submit ----------
-  el('btnSaveOutflow').addEventListener('click', async () => {
-    const date = el('outDate').value;
-    const item = el('outItem').value;
-    const totalQty = Number(el('outTotalQty').value);
-    if (!date || !item || !totalQty || totalQty <= 0) { showMsg('outMsg','Enter date, item and positive total quantity', true); return; }
-
-    const receivers = [];
-    let sum = 0;
-    document.querySelectorAll('#receiversContainer .receiver-row').forEach(row => {
-      const rname = row.querySelector('.r-name').value.trim();
-      const rloc = row.querySelector('.r-location').value.trim();
-      const rqty = Number(row.querySelector('.r-qty').value) || 0;
-      if (rname && rqty > 0) {
-        receivers.push({ receiver: rname, location: rloc, quantity: rqty });
-        sum += rqty;
-      }
-    });
-
-    if (!receivers.length) { showMsg('outMsg','Add at least one receiver', true); return; }
-    if (sum !== totalQty) { showMsg('outMsg',`Sum of receiver quantities (${sum}) must equal total (${totalQty})`, true); return; }
-
-    const username = sessionStorage.getItem('username'), password = sessionStorage.getItem('password');
-    const res = await post({ action: 'outflow', date, item, totalQuantity: totalQty, receivers, username, password });
-    if (res && res.success) {
-      showMsg('outMsg','Outflow saved ✔');
-      el('outDate').value=''; el('outItem').value=''; el('outTotalQty').value=''; el('receiversContainer').innerHTML='';
-    } else {
-      showMsg('outMsg', res && res.error ? res.error : 'Error saving outflow', true);
+  // Save inflow (submit request)
+  $('btnSaveInflow').addEventListener('click', async ()=>{
+    const s = getSession();
+    if(!s.user){ showMsg('inMsg','Login required',true); return; }
+    const date = $('inRequestDate').value;
+    const rows = Array.from(document.querySelectorAll('#inflowRows .receiver-row'));
+    if(rows.length===0){ showMsg('inMsg','Add at least one item',true); return; }
+    const items = [];
+    for(const r of rows){
+      const item = r.querySelector('.in-item').value;
+      const qty = Number(r.querySelector('.in-qty').value) || 0;
+      const dt = r.querySelector('.in-date').value || date;
+      if(!item || qty <=0){ showMsg('inMsg','All rows require item & positive qty',true); return; }
+      items.push({ date: dt, item, quantity: qty, party: '' });
     }
+    showMsg('inMsg','Submitting...');
+    const out = await post({ action:'submitRequest', username:s.user, password:s.pass, type:'inflow', items });
+    if(out && out.success){ showMsg('inMsg','Request submitted: '+out.requestId); // clear rows
+      $('inflowRows').innerHTML=''; createInflowRow(); $('inRequestDate').value='';
+    } else showMsg('inMsg',out.error||'Error',true);
   });
 
-  el('btnClearOut').addEventListener('click', ()=>{ el('outDate').value=''; el('outItem').value=''; el('outTotalQty').value=''; el('receiversContainer').innerHTML=''; showMsg('outMsg',''); });
+  // Save outflow
+  $('btnSaveOutflow').addEventListener('click', async ()=>{
+    const s = getSession(); if(!s.user){ showMsg('outMsg','Login required',true); return; }
+    const date = $('outRequestDate').value;
+    const item = $('outSelectItem').value;
+    const total = Number($('outTotalQty').value) || 0;
+    if(!item || total<=0){ showMsg('outMsg','Select item & positive total qty',true); return; }
+    const rows = Array.from(document.querySelectorAll('#receiversBox .receiver-row'));
+    if(rows.length===0){ showMsg('outMsg','Add receivers',true); return; }
+    const receivers = [];
+    let sum=0;
+    for(const r of rows){
+      const name = r.querySelector('.r-name').value.trim();
+      const loc = r.querySelector('.r-location').value.trim();
+      const qty = Number(r.querySelector('.r-qty').value) || 0;
+      if(!name || qty<=0){ showMsg('outMsg','Each receiver needs name & qty',true); return; }
+      receivers.push({ receiver:name, location:loc, quantity: qty });
+      sum += qty;
+    }
+    if(sum !== total){ showMsg('outMsg',`Sum ${sum} ≠ total ${total}`,true); return; }
+    // transform to items array expected by backend: items: [{date,item,quantity,party,location}]
+    const items = receivers.map(r => ({ date: date, item: item, quantity: r.quantity, party: r.receiver, location: r.location }));
+    showMsg('outMsg','Submitting...');
+    const out = await post({ action:'submitRequest', username:s.user, password:s.pass, type:'outflow', items, totalQuantity: total });
+    if(out && out.success){ showMsg('outMsg','Request submitted: '+out.requestId); $('outRequestDate').value=''; $('outSelectItem').value=''; $('outTotalQty').value=''; $('receiversBox').innerHTML=''; }
+    else showMsg('outMsg',out.error||'Error',true);
+  });
 
-  // Auto-load / restore session if present
+  // Pending: refresh and render (admins)
+  async function refreshPending(){
+    const s = getSession();
+    if(!s.user) return;
+    const out = await post({ action:'listPending', username:s.user, password:s.pass });
+    const area = $('pendingArea');
+    if(!out || !out.success){ area.innerHTML = '<div class="muted">No access or error</div>'; return; }
+    if(!out.pending || out.pending.length===0){ area.innerHTML = '<div class="muted">No pending requests</div>'; return; }
+    // render each request
+    let html = '';
+    out.pending.forEach(req => {
+      const isPending = req.status === 'Pending';
+      html += `<div style="border:1px solid #eef2f7;padding:8px;border-radius:8px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><strong>${req.requestId}</strong> <span class="muted">by ${req.submittedBy} @ ${new Date(req.submittedAt).toLocaleString()}</span></div>
+          <div>${req.status}</div>
+        </div>
+        <table style="margin-top:8px"><thead><tr><th>Date</th><th>Item</th><th>Qty</th><th>Party</th><th>Location</th></tr></thead><tbody>`;
+      req.items.forEach(it=>{
+        html += `<tr><td>${it.date?new Date(it.date).toLocaleDateString() : ''}</td><td>${it.item}</td><td>${it.quantity}</td><td>${it.party}</td><td>${it.location||''}</td></tr>`;
+      });
+      html += `</tbody></table>
+        <div style="display:flex;gap:8px;margin-top:8px">`;
+      if(isPending){
+        html += `<button class="btn" onclick="actRequest('${req.requestId}','approve')">Approve</button>`;
+        html += `<button class="btn secondary" onclick="actRequest('${req.requestId}','reject')">Reject</button>`;
+      }
+      html += `</div></div>`;
+    });
+    area.innerHTML = html;
+  }
+  window.actRequest = async function(requestId, decision){
+    const s = getSession();
+    if(!s.user){ alert('Login required'); return; }
+    if(!confirm(`${decision} request ${requestId}?`)) return;
+    const out = await post({ action:'actOnRequest', username:s.user, password:s.pass, requestId, decision: decision==='approve' ? 'approve' : 'reject' });
+    if(out && out.success){ alert(out.message || 'Done'); refreshPending(); loadItems(); } else alert(out.error || 'Error');
+  };
+
+  // refresh pending (if admin) else show disabled message
+  async function refreshPendingIfAdmin(){
+    const s = getSession();
+    if(!s.user) return;
+    const res = await post({ action:'listPending', username:s.user, password:s.pass });
+    if(res && res.success){ // show pending panel
+      $('btnRefreshPending').style.display='inline-block'; refreshPending();
+    } else {
+      $('pendingArea').innerHTML = '<div class="muted">Pending (Admin only)</div>';
+      $('btnRefreshPending').style.display='none';
+    }
+  }
+  $('btnRefreshPending').addEventListener('click', refreshPending);
+
+  // auto init
   (function init(){
-    const u = sessionStorage.getItem('username'), p = sessionStorage.getItem('password');
-    if (u && p) {
-      el('btnLogin').style.display = 'none'; el('btnLogout').style.display = 'inline-block';
-      el('formsArea').style.display = 'block'; showMsg('loginMsg','Logged in as ' + u);
-      loadItems();
+    // set todays date defaults
+    const d = new Date(); const iso = d.toISOString().slice(0,10);
+    $('inRequestDate').value = iso; $('outRequestDate').value = iso;
+    // create one inflow row and one receiver placeholder
+    createInflowRowHelper();
+    addReceiver();
+    // restore session if present
+    const sess = getSession();
+    if(sess.user && sess.pass){
+      setTimeout(async ()=>{ // try silent login check by calling login endpoint
+        const res = await post({ action:'login', username:sess.user, password:sess.pass });
+        if(res && res.success){ setSession(sess.user, sess.pass); loadItems(); refreshPendingIfAdmin(); } else clearSession();
+      },200);
     }
   })();
+
+  // small helper wrapper to create inflow row (and populate items)
+  function createInflowRowHelper(){
+    createInflowRow();
+    loadItems(); // ensure selects are filled
+  }
+  function createInflowRow(){
+    const container = $('inflowRows');
+    const div = document.createElement('div'); div.className='receiver-row';
+    div.innerHTML = `
+      <input class="in-date" type="date">
+      <select class="in-item in-item-select"><option>Loading…</option></select>
+      <input class="in-qty" type="number" min="1" placeholder="Qty">
+    `;
+    container.appendChild(div);
+    div.querySelector('.in-date').value = $('inRequestDate').value;
+    // double-click to remove (but keep at least one)
+    div.addEventListener('dblclick', ()=>{ if(document.querySelectorAll('#inflowRows .receiver-row').length>1) div.remove(); });
+    loadItems();
+  }
 </script>
 </body>
 </html>

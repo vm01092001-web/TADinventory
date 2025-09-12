@@ -147,9 +147,15 @@
     function getSession(){return JSON.parse(localStorage.getItem('session')||'{}');}
     function setSession(s){localStorage.setItem('session',JSON.stringify(s));}
     function clearSession(){localStorage.removeItem('session');}
-    async function post(data){
-      const r = await fetch(API_URL,{method:'POST',body:JSON.stringify(data)});
-      return r.json();
+   async function post(data){
+  const r = await fetch(API_URL, {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: { "Content-Type": "application/json" }
+  });
+  return r.json();
+}
+
     }
     async function loadItems(){
       const r = await fetch(API_URL+"?action=getItems");

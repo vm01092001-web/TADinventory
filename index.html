@@ -1,220 +1,229 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Inventory Dashboard</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    /* === Neon Futuristic Dashboard Style === */
-    :root{
-      --bg: #0a0f1c;
-      --card: rgba(255,255,255,0.05);
-      --accent: #00ffe7;
-      --muted: #9ca3af;
-      --ok: #34d399;
-      --danger: #f87171;
-      --radius: 16px;
-      --shadow: 0 8px 30px rgba(0,0,0,0.6);
-    }
-    body{
-      font-family: Inter, system-ui, sans-serif;
-      background: var(--bg);
-      color: #e5e7eb;
-      margin:0;
-      height:100vh;
-      display:flex;
-    }
-    /* Sidebar */
-    .sidebar{
-      width:240px;
-      background:rgba(255,255,255,0.03);
-      backdrop-filter: blur(20px);
-      padding:20px;
-      display:flex;
-      flex-direction:column;
-      box-shadow: var(--shadow);
-    }
-    .sidebar h2{font-size:18px;margin:0 0 20px 0;color:var(--accent);}
-    .nav-item{
-      padding:12px 14px;
-      margin-bottom:8px;
-      border-radius:var(--radius);
-      cursor:pointer;
-      transition:background 0.2s;
-    }
-    .nav-item:hover{background:rgba(255,255,255,0.08);}
-    .nav-item.active{background:var(--accent);color:#000;font-weight:600;}
-    /* Main content */
-    .main{flex:1;padding:24px;overflow:auto;}
-    .card{
-      background:var(--card);
-      border-radius:var(--radius);
-      padding:20px;
-      margin-bottom:20px;
-      box-shadow:var(--shadow);
-      backdrop-filter: blur(20px);
-    }
-    h1{margin:0;font-size:24px;color:var(--accent);}
-    label{display:block;margin-top:12px;color:var(--muted);font-size:14px;}
-    input,select,button{
-      width:100%;padding:10px 12px;
-      border-radius:10px;
-      border:1px solid rgba(255,255,255,0.1);
-      margin-top:6px;
-      background:rgba(255,255,255,0.05);
-      color:#fff;
-    }
-    input:focus,select:focus{outline:none;border-color:var(--accent);}
-    button.btn{background:var(--accent);color:#000;font-weight:600;cursor:pointer;}
-    button.btn:hover{opacity:0.9;}
-    table{width:100%;border-collapse:collapse;margin-top:10px;color:#fff;}
-    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.1);font-size:14px;}
-    th{color:var(--accent);}
-    .status-pending{color:var(--accent);}
-    .status-approved{color:var(--ok);}
-    .status-rejected{color:var(--danger);}
-  </style>
+<meta charset="utf-8">
+<title>Inventory Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg: #0a0f1c;
+  --card: rgba(255,255,255,0.05);
+  --accent: #00ffe7;
+  --muted: #9ca3af;
+  --ok: #34d399;
+  --danger: #f87171;
+  --radius: 16px;
+  --shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+body{
+  font-family: Inter, system-ui, sans-serif;
+  min-height:100vh;
+  background: linear-gradient(270deg, #0a0f1c, #001f3f, #0a0f1c);
+  background-size: 600% 600%;
+  animation: gradientBG 15s ease infinite;
+  color:#e5e7eb;
+  margin:0;
+  display:flex;
+  overflow:hidden;
+}
+@keyframes gradientBG {
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+/* Sidebar */
+.sidebar{
+  width:240px;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter: blur(20px);
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  box-shadow: var(--shadow);
+}
+.sidebar h2{font-size:18px;margin:0 0 20px 0;color:var(--accent);}
+.nav-item{
+  padding:12px 14px;
+  margin-bottom:8px;
+  border-radius:var(--radius);
+  cursor:pointer;
+  transition:0.3s;
+}
+.nav-item:hover{
+  background:rgba(0,255,231,0.1);
+  box-shadow:0 0 12px var(--accent);
+  transform: translateY(-2px);
+}
+.nav-item.active{background:var(--accent);color:#000;font-weight:600;}
+.main{
+  flex:1;
+  padding:24px;
+  overflow-y:auto;
+}
+.card{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:20px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow);
+  backdrop-filter: blur(20px);
+}
+h1{margin:0;font-size:24px;color:var(--accent);}
+label{display:block;margin-top:12px;color:var(--muted);font-size:14px;}
+input,select,button{
+  width:100%;padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.1);
+  margin-top:6px;
+  background:rgba(255,255,255,0.05);
+  color:#fff;
+  backdrop-filter: blur(6px);
+}
+input:focus,select:focus{outline:none;border-color:var(--accent);}
+button.btn{background:var(--accent);color:#000;font-weight:600;cursor:pointer;}
+button.btn:hover{opacity:0.9; box-shadow:0 0 12px var(--accent);}
+table{width:100%;border-collapse:collapse;margin-top:10px;color:#fff;}
+th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.1);font-size:14px;}
+th{color:var(--accent);}
+.status-pending{color:var(--accent);}
+.status-approved{color:var(--ok);}
+.status-rejected{color:var(--danger);}
+.main::-webkit-scrollbar{width:8px;}
+.main::-webkit-scrollbar-thumb{background:var(--accent);border-radius:8px;}
+</style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Inventory</h2>
-    <div class="nav-item active" data-tab="items">Items</div>
-    <div class="nav-item" data-tab="inflow">Inflow</div>
-    <div class="nav-item" data-tab="outflow">Outflow</div>
-    <div class="nav-item admin-only" data-tab="requests">Requests</div>
-    <div style="margin-top:auto">
-      <div id="who" style="font-size:14px;color:var(--muted);margin-bottom:10px">Not signed</div>
-      <input id="loginUser" placeholder="username">
-      <input id="loginPass" type="password" placeholder="password">
-      <button id="btnLogin" class="btn" style="margin-top:8px">Login</button>
-      <button id="btnLogout" class="btn" style="margin-top:8px;display:none">Logout</button>
+<div class="sidebar">
+  <h2>Inventory</h2>
+  <div class="nav-item active" data-tab="items">Items</div>
+  <div class="nav-item" data-tab="inflow">Inflow</div>
+  <div class="nav-item" data-tab="outflow">Outflow</div>
+  <div class="nav-item admin-only" data-tab="requests">Requests</div>
+  <div style="margin-top:auto">
+    <div id="who" style="font-size:14px;color:var(--muted);margin-bottom:10px">Not signed</div>
+    <input id="loginUser" placeholder="username">
+    <input id="loginPass" type="password" placeholder="password">
+    <button id="btnLogin" class="btn" style="margin-top:8px">Login</button>
+    <button id="btnLogout" class="btn" style="margin-top:8px;display:none">Logout</button>
+  </div>
+</div>
+
+<div class="main">
+  <!-- Tabs -->
+  <div id="tab-items" class="dash-tab">
+    <div class="card">
+      <h1>Manage Items</h1>
+      <div style="display:flex;gap:10px;margin-top:12px">
+        <input id="newItem" placeholder="New item name">
+        <button id="btnAddItem" class="btn">Add</button>
+      </div>
+      <div id="addItemMsg" style="margin-top:8px;font-size:14px;color:var(--muted)"></div>
     </div>
   </div>
 
-  <div class="main">
-    <div id="tab-items" class="dash-tab">
-      <div class="card">
-        <h1>Manage Items</h1>
-        <div style="display:flex;gap:10px;margin-top:12px">
-          <input id="newItem" placeholder="New item name">
-          <button id="btnAddItem" class="btn">Add</button>
-        </div>
-        <div id="addItemMsg" style="margin-top:8px;font-size:14px;color:var(--muted)"></div>
-      </div>
-    </div>
-
-    <div id="tab-inflow" class="dash-tab" style="display:none">
-      <div class="card"><h1>Inflow Request</h1>
-        <label>Date</label><input id="inRequestDate" type="date">
-        <div id="inRows" style="margin-top:10px"></div>
-        <button id="btnAddInRow" class="btn" style="margin-top:10px">+ Add Item Row</button>
-        <button id="btnSubmitIn" class="btn" style="margin-top:10px">Submit Request</button>
-        <div id="inMsg" style="margin-top:8px;font-size:14px;color:var(--muted)"></div>
-      </div>
-    </div>
-
-    <div id="tab-outflow" class="dash-tab" style="display:none">
-      <div class="card"><h1>Outflow Request</h1>
-        <label>Date</label><input id="outRequestDate" type="date">
-        <label>Item</label><select id="outItem"></select>
-        <label>Total Quantity</label><input id="outTotal" type="number" min="1">
-        <h3 style="margin-top:14px;color:var(--accent)">Receivers</h3>
-        <div id="receivers"></div>
-        <button id="btnAddReceiver" class="btn" style="margin-top:10px">+ Add Receiver</button>
-        <button id="btnSubmitOut" class="btn" style="margin-top:10px">Submit Request</button>
-        <div id="outMsg" style="margin-top:8px;font-size:14px;color:var(--muted)"></div>
-      </div>
-    </div>
-
-    <div id="tab-requests" class="dash-tab" style="display:none">
-      <div class="card"><h1>Requests Dashboard</h1>
-        <div style="margin-top:12px">
-          <input id="filterItem" placeholder="Filter by item" style="margin-bottom:6px">
-          <input id="filterUser" placeholder="Filter by user">
-          <button id="btnApplyFilters" class="btn" style="margin-top:8px">Apply Filters</button>
-        </div>
-        <div id="requestsArea" style="margin-top:16px"></div>
-      </div>
+  <div id="tab-inflow" class="dash-tab" style="display:none">
+    <div class="card"><h1>Inflow Request</h1>
+      <label>Date</label><input id="inRequestDate" type="date">
+      <div id="inRows" style="margin-top:10px"></div>
+      <button id="btnAddInRow" class="btn" style="margin-top:10px">+ Add Item Row</button>
+      <button id="btnSubmitIn" class="btn" style="margin-top:10px">Submit Request</button>
+      <div id="inMsg" style="margin-top:8px;font-size:14px;color:var(--muted)"></div>
     </div>
   </div>
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwb18kjaGKQqP01oYLpzIURLqDYSj1fjXBqELDPcycqYGdkP8y8szcuizXljLBd0Eol/exec"; // <-- replace with deployed Apps Script URL
+  <div id="tab-outflow" class="dash-tab" style="display:none">
+    <div class="card"><h1>Outflow Request</h1>
+      <label>Date</label><input id="outRequestDate" type="date">
+      <label>Item</label><select id="outItem"></select>
+      <label>Total Quantity</label><input id="outTotal" type="number" min="1">
+      <h3 style="margin-top:14px;color:var(--accent)">Receivers</h3>
+      <div id="receivers"></div>
+      <button id="btnAddReceiver" class="btn" style="margin-top:10px">+ Add Receiver</button>
+      <button id="btnSubmitOut" class="btn" style="margin-top:10px">Submit Request</button>
+      <div id="outMsg" style="margin-top:8px;font-size:14px;color:var(--muted)"></div>
+    </div>
+  </div>
 
-    function $(id){return document.getElementById(id);}
-    function txt(id,s){if($(id)) $(id).innerText=s;}
-    function getSession(){return JSON.parse(localStorage.getItem('session')||'{}');}
-    function setSession(s){localStorage.setItem('session',JSON.stringify(s));}
-    function clearSession(){localStorage.removeItem('session');}
-   async function post(data){
-  const r = await fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: { "Content-Type": "application/json" }
-  });
-  return r.json();
+  <div id="tab-requests" class="dash-tab" style="display:none">
+    <div class="card"><h1>Requests Dashboard</h1>
+      <div style="margin-top:12px">
+        <input id="filterItem" placeholder="Filter by item" style="margin-bottom:6px">
+        <input id="filterUser" placeholder="Filter by user">
+        <button id="btnApplyFilters" class="btn" style="margin-top:8px">Apply Filters</button>
+      </div>
+      <div id="requestsArea" style="margin-top:16px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycby9Avc7e98gi_xMGKPsYiaky93KLlGuYJA8Og9Riei5HZBMlJFCEI6cmgLVLNK5aAL2/exec";
+
+function $(id){return document.getElementById(id);}
+function txt(id,s){if($(id)) $(id).innerText=s;}
+function getSession(){return JSON.parse(localStorage.getItem('session')||'{}');}
+function setSession(s){localStorage.setItem('session',JSON.stringify(s));}
+function clearSession(){localStorage.removeItem('session');}
+
+async function post(data){
+  try{
+    const r = await fetch(API_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    return await r.json();
+  }catch(e){
+    console.error("API error", e);
+    return {success:false,error:"Network error"};
+  }
 }
-// === Login / Logout ===
-$("btnLogin").addEventListener("click", async () => {
+
+// --- Login/Logout ---
+$("btnLogin").addEventListener("click", async ()=>{
   const u = $("loginUser").value.trim();
   const p = $("loginPass").value.trim();
-  if (!u || !p) {
-    alert("Enter username and password");
-    return;
-  }
+  if(!u||!p){ alert("Enter username and password"); return; }
 
-  const res = await post({ action:"login", username:u, password:p });
-  console.log("Login response", res); // 👈 debug
-  if(res && res.success){
-    setSession({ user:u, pass:p });
-    txt("who", "Signed as " + u);
+  const res = await post({action:"login", username:u, password:p});
+  if(res.success){
+    setSession({user:u, isAdmin:res.isAdmin});
+    txt("who", "Signed as "+u);
     $("btnLogin").style.display="none";
     $("btnLogout").style.display="block";
     document.querySelectorAll(".admin-only").forEach(el=>el.style.display=res.isAdmin?"block":"none");
     alert("Login successful ✅");
-  }else{
-    alert(res.error || "Login failed");
-  }
+  }else alert(res.error || "Login failed");
 });
 
-$("btnLogout").addEventListener("click", () => {
+$("btnLogout").addEventListener("click", ()=>{
   clearSession();
   txt("who","Not signed");
   $("btnLogin").style.display="block";
   $("btnLogout").style.display="none";
+  document.querySelectorAll(".admin-only").forEach(el=>el.style.display="none");
   alert("Logged out");
 });
 
-
-  
-    async function loadItems(){
-      const r = await fetch(API_URL+"?action=getItems");
-      const js = await r.json();
-      if(js && js.success){
-        const opts = js.items.map(i=>"<option>"+i+"</option>").join("");
-        $("outItem").innerHTML = "<option value=''>Select</option>"+opts;
-        document.querySelectorAll("#inRows select.itemSel").forEach(sel=>{
-          const old = sel.value;
-          sel.innerHTML = "<option value=''>Select</option>"+opts;
-          if(old) sel.value=old;
-        });
-      }
-    }
-    // === UI logic for tabs ===
-    function showDashTab(tab){
-      document.querySelectorAll('.dash-tab').forEach(t=>t.style.display='none');
-      $("tab-"+tab).style.display="block";
-    }
-    document.querySelectorAll('.nav-item').forEach(it=>{
-      it.addEventListener('click', ()=>{
-        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-        it.classList.add('active');
-        showDashTab(it.dataset.tab);
+// --- Load items ---
+async function loadItems(){
+  try{
+    const r = await fetch(API_URL+"?action=getItems");
+    const js = await r.json();
+    if(js.success){
+      const opts = js.items.map(i=>"<option>"+i+"</option>").join("");
+      $("outItem").innerHTML = "<option value=''>Select</option>"+opts;
+      document.querySelectorAll("#inRows select.itemSel").forEach(sel=>{
+        const old = sel.value;
+        sel.innerHTML = "<option value=''>Select</option>"+opts;
+        if(old) sel.value = old;
       });
-    });
-    // (rest of JS: login/logout, addItem, inflow/outflow submission, requests dashboard etc. 
-    // — from the long snippet you pasted, unchanged)
-  </script>
-</body>
-</html>
+    }
+  }catch(e){console.error(e);}
+}
+
+// --- Tabs ---
+function showDashTab(tab){
+  document.querySelectorAll('.dash-tab').forEach(t=>t.style.display='none');
+ 

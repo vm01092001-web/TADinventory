@@ -155,6 +155,37 @@
   });
   return r.json();
 }
+// === Login / Logout ===
+$("btnLogin").addEventListener("click", async () => {
+  const u = $("loginUser").value.trim();
+  const p = $("loginPass").value.trim();
+  if (!u || !p) {
+    alert("Enter username and password");
+    return;
+  }
+
+  const res = await post({ action:"login", username:u, password:p });
+  console.log("Login response", res); // 👈 debug
+  if(res && res.success){
+    setSession({ user:u, pass:p });
+    txt("who", "Signed as " + u);
+    $("btnLogin").style.display="none";
+    $("btnLogout").style.display="block";
+    document.querySelectorAll(".admin-only").forEach(el=>el.style.display=res.isAdmin?"block":"none");
+    alert("Login successful ✅");
+  }else{
+    alert(res.error || "Login failed");
+  }
+});
+
+$("btnLogout").addEventListener("click", () => {
+  clearSession();
+  txt("who","Not signed");
+  $("btnLogin").style.display="block";
+  $("btnLogout").style.display="none";
+  alert("Logged out");
+});
+
 
     }
     async function loadItems(){

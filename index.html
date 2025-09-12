@@ -1,138 +1,271 @@
+<!-- Index.html -->
 <!doctype html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
-  <title>Inventory Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventory Dashboard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <style>
-    body {
-      background: #0a0f1c;
-      color: #e5e7eb;
-      font-family: Inter, system-ui, sans-serif;
-      display: flex;
-      height: 100vh;
-      align-items: center;
-      justify-content: center;
+    :root{
+      --bg:#0a0f1c; --card:rgba(255,255,255,0.04); --accent:#00ffe7;
+      --muted:#9ca3af; --ok:#34d399; --danger:#f87171; --radius:16px;
     }
-    .card {
-      background: rgba(255,255,255,0.05);
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
-      width: 300px;
-      backdrop-filter: blur(20px);
-    }
-    h1 {
-      color: #00ffe7;
-      font-size: 22px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    input {
-      width: 100%;
-      padding: 10px 12px;
-      margin-bottom: 12px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      background: rgba(255,255,255,0.05);
-      color: #fff;
-    }
-    input:focus { border-color: #00ffe7; outline: none; }
-    button {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      background: #00ffe7;
-      color: #000;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    button:hover { opacity: 0.9; }
-    .msg {
-      margin-top: 10px;
-      font-size: 14px;
-      color: #9ca3af;
-      text-align: center;
-    }
+    body{font-family:Inter,system-ui,sans-serif;background:linear-gradient(270deg,#0a0f1c,#001f3f,#0a0f1c);background-size:600% 600%;animation:gradientBG 15s ease infinite;color:#e5e7eb;margin:0;display:flex;min-height:100vh;}
+    @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .sidebar{width:260px;background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);padding:20px;display:flex;flex-direction:column;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+    .sidebar h2{color:var(--accent);margin:0 0 12px 0}
+    .nav-item{padding:12px;border-radius:12px;margin-bottom:8px;cursor:pointer}
+    .nav-item.active{background:var(--accent);color:#000;font-weight:600}
+    .main{flex:1;padding:24px;overflow:auto}
+    .card{background:var(--card);padding:18px;border-radius:12px;backdrop-filter:blur(16px);margin-bottom:16px}
+    h1{color:var(--accent);margin:0 0 10px 0}
+    input,select,button{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);color:#fff;margin-top:8px}
+    button.btn{background:var(--accent);color:#000;font-weight:600;cursor:pointer}
+    .muted{color:var(--muted);font-size:14px;margin-top:8px}
   </style>
 </head>
 <body>
-  <div class="card">
-    <h1>Inventory Login</h1>
-    <input id="username" placeholder="Username">
-    <input id="password" type="password" placeholder="Password">
-    <button id="btnLogin">Login</button>
-    <button id="btnLogout" style="display:none; margin-top:10px;">Logout</button>
-    <div id="status" class="msg">Not signed in</div>
+  <div class="sidebar">
+    <h2>Inventory</h2>
+    <div class="nav-item active" data-tab="items">Items</div>
+    <div class="nav-item" data-tab="inflow">Inflow</div>
+    <div class="nav-item" data-tab="outflow">Outflow</div>
+    <div class="nav-item admin-only" data-tab="requests" style="display:none">Requests</div>
+
+    <div style="margin-top:auto">
+      <div id="who" class="muted">Not signed</div>
+      <input id="loginUser" placeholder="username">
+      <input id="loginPass" type="password" placeholder="password">
+      <button id="btnLogin" class="btn">Login</button>
+      <button id="btnLogout" class="btn" style="display:none;margin-top:8px">Logout</button>
+    </div>
   </div>
 
-  <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbxzvvXP3o9iO2r9vy3KG-yAJFJRnGeCcvAlLkP8PM3tvbKlQ2QSh6khBfTTTmC66yeE/exec"; 
-    // 👆 Replace with your real deployed Apps Script URL
+  <div class="main">
+    <div id="tab-items" class="dash-tab">
+      <div class="card">
+        <h1>Manage Items</h1>
+        <div style="display:flex;gap:8px">
+          <input id="newItem" placeholder="New item name">
+          <button id="btnAddItem" class="btn" style="width:120px">Add</button>
+        </div>
+        <div id="addItemMsg" class="muted"></div>
+      </div>
+    </div>
 
-    function setSession(user, isAdmin) {
-      localStorage.setItem("session", JSON.stringify({user, isAdmin}));
-    }
-    function clearSession() { localStorage.removeItem("session"); }
-    function getSession() {
-      return JSON.parse(localStorage.getItem("session") || "{}");
-    }
+    <div id="tab-inflow" class="dash-tab" style="display:none">
+      <div class="card">
+        <h1>Inflow Request</h1>
+        <label>Date</label><input id="inRequestDate" type="date">
+        <div id="inRows"></div>
+        <button id="btnAddInRow" class="btn">+ Add Item Row</button>
+        <button id="btnSubmitIn" class="btn">Submit Request</button>
+        <div id="inMsg" class="muted"></div>
+      </div>
+    </div>
 
-    async function login(u, p) {
-      const res = await fetch(API_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({action: "login", username: u, password: p})
+    <div id="tab-outflow" class="dash-tab" style="display:none">
+      <div class="card">
+        <h1>Outflow Request</h1>
+        <label>Date</label><input id="outRequestDate" type="date">
+        <label>Item</label><select id="outItem"></select>
+        <label>Total Quantity</label><input id="outTotal" type="number" min="1">
+        <h3 style="color:var(--accent)">Receivers</h3>
+        <div id="receivers"></div>
+        <button id="btnAddReceiver" class="btn">+ Add Receiver</button>
+        <button id="btnSubmitOut" class="btn">Submit Request</button>
+        <div id="outMsg" class="muted"></div>
+      </div>
+    </div>
+
+    <div id="tab-requests" class="dash-tab" style="display:none">
+      <div class="card">
+        <h1>Requests Dashboard</h1>
+        <div>
+          <input id="filterItem" placeholder="Filter by item">
+          <input id="filterUser" placeholder="Filter by user">
+          <button id="btnApplyFilters" class="btn">Apply Filters</button>
+        </div>
+        <div id="requestsArea" class="muted"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Local session
+  function getSession(){ return JSON.parse(localStorage.getItem('session') || '{}'); }
+  function setSession(s){ localStorage.setItem('session', JSON.stringify(s)); }
+  function clearSession(){ localStorage.removeItem('session'); }
+
+  // UI helpers
+  function $(id){ return document.getElementById(id); }
+  function showTab(name){
+    document.querySelectorAll('.dash-tab').forEach(t=>t.style.display='none');
+    $('tab-'+name).style.display='block';
+  }
+  document.querySelectorAll('.nav-item').forEach(it=>{
+    it.addEventListener('click', ()=>{
+      document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+      it.classList.add('active');
+      showTab(it.dataset.tab);
+    });
+  });
+
+  // On load - restore session & load items
+  window.onload = function(){
+    const s = getSession();
+    if(s.user){
+      $('who').innerText = 'Signed as ' + s.user + (s.isAdmin? ' (Admin)':'');
+      $('btnLogin').style.display='none';
+      $('btnLogout').style.display='block';
+      document.querySelectorAll('.admin-only').forEach(el=>el.style.display=s.isAdmin?'block':'none');
+    }
+    loadItems();
+  };
+
+  // LOGIN
+  $('btnLogin').addEventListener('click', ()=>{
+    const u = $('loginUser').value.trim();
+    const p = $('loginPass').value.trim();
+    if(!u||!p){ alert('enter username/password'); return; }
+    $('who').innerText = 'Signing in...';
+    google.script.run.withSuccessHandler(res=>{
+      if(res.success){
+        setSession({user:res.user, isAdmin:res.isAdmin, pass:p});
+        $('who').innerText = 'Signed as ' + res.user + (res.isAdmin? ' (Admin)':'');
+        $('btnLogin').style.display='none';
+        $('btnLogout').style.display='block';
+        document.querySelectorAll('.admin-only').forEach(el=>el.style.display=res.isAdmin?'block':'none');
+        alert('Login successful ✅');
+      } else {
+        $('who').innerText = 'Not signed';
+        alert('Login failed: ' + (res.error || 'unknown'));
+      }
+    }).serverLogin(u,p);
+  });
+
+  $('btnLogout').addEventListener('click', ()=>{
+    clearSession();
+    $('who').innerText = 'Not signed';
+    $('btnLogin').style.display='block';
+    $('btnLogout').style.display='none';
+    document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');
+    alert('Logged out');
+  });
+
+  // LOAD ITEMS (populates outItem and inRows selects)
+  function loadItems(){
+    google.script.run.withSuccessHandler(res=>{
+      if(!res.success) return console.error(res.error);
+      const opts = res.items.map(i => `<option>${i}</option>`).join('');
+      $('outItem').innerHTML = '<option value="">Select</option>' + opts;
+      // update any item selects in inRows
+      document.querySelectorAll('#inRows select.itemSel').forEach(sel=>{
+        const old = sel.value;
+        sel.innerHTML = '<option value="">Select</option>' + opts;
+        if(old) sel.value = old;
       });
-      return res.json();
-    }
+    }).serverGetItems();
+  }
 
-    document.getElementById("btnLogin").addEventListener("click", async () => {
-      const u = document.getElementById("username").value.trim();
-      const p = document.getElementById("password").value.trim();
-      if(!u || !p) { alert("Enter username and password"); return; }
-
-      document.getElementById("status").innerText = "Logging in...";
-      try {
-        const res = await login(u, p);
-        console.log("Login response:", res);
-
-        if(res.success) {
-          setSession(res.user, res.isAdmin);
-          document.getElementById("status").innerText = 
-            "Signed in as " + res.user + (res.isAdmin ? " (Admin)" : "");
-          document.getElementById("btnLogin").style.display = "none";
-          document.getElementById("btnLogout").style.display = "block";
-          alert("✅ Login successful");
-        } else {
-          document.getElementById("status").innerText = res.error || "Login failed";
-          alert("❌ " + (res.error || "Login failed"));
-        }
-      } catch(err) {
-        document.getElementById("status").innerText = "Error connecting to server";
-        console.error(err);
+  // ADD ITEM
+  $('btnAddItem').addEventListener('click', ()=>{
+    const nm = $('newItem').value.trim();
+    if(!nm) return alert('enter item name');
+    const s = getSession();
+    google.script.run.withSuccessHandler(res=>{
+      if(res.success){
+        $('addItemMsg').innerText = 'Added';
+        $('newItem').value = '';
+        loadItems();
+      } else {
+        $('addItemMsg').innerText = res.error || 'Error';
       }
-    });
+    }).serverAddItem(s.user, s.pass, nm);
+  });
 
-    document.getElementById("btnLogout").addEventListener("click", () => {
-      clearSession();
-      document.getElementById("status").innerText = "Not signed in";
-      document.getElementById("btnLogin").style.display = "block";
-      document.getElementById("btnLogout").style.display = "none";
-      alert("🔒 Logged out");
-    });
+  // Inflow rows dynamic
+  $('btnAddInRow').addEventListener('click', addInRow);
+  function addInRow(data){
+    const wrapper = document.createElement('div');
+    wrapper.style.display='flex'; wrapper.style.gap='8px'; wrapper.style.marginTop='8px';
+    const sel = document.createElement('select'); sel.className='itemSel';
+    sel.innerHTML = $('outItem').innerHTML; // reuse same options
+    const qty = document.createElement('input'); qty.type='number'; qty.placeholder='qty'; qty.min=1;
+    const party = document.createElement('input'); party.placeholder='party (optional)';
+    wrapper.appendChild(sel); wrapper.appendChild(qty); wrapper.appendChild(party);
+    $('inRows').appendChild(wrapper);
+  }
 
-    // Auto restore session if exists
-    window.onload = () => {
-      const s = getSession();
-      if(s.user) {
-        document.getElementById("status").innerText = 
-          "Signed in as " + s.user + (s.isAdmin ? " (Admin)" : "");
-        document.getElementById("btnLogin").style.display = "none";
-        document.getElementById("btnLogout").style.display = "block";
-      }
-    };
-  </script>
+  // Submit Inflow
+  $('btnSubmitIn').addEventListener('click', ()=>{
+    const rows = Array.from(document.querySelectorAll('#inRows > div')).map(div=>{
+      const sel = div.querySelector('select'); const qty = div.querySelector('input[type=number]'); const party = div.querySelectorAll('input')[1];
+      return { date: $('inRequestDate').value || new Date().toISOString(), item: sel.value, quantity: Number(qty.value) || 0, party: party.value || '' };
+    }).filter(r=>r.item && r.quantity>0);
+    if(rows.length===0) return alert('add at least one valid row');
+    const s = getSession();
+    google.script.run.withSuccessHandler(res=>{
+      if(res.success){ $('inMsg').innerText = 'Request submitted: ' + res.requestId; $('inRows').innerHTML=''; }
+      else $('inMsg').innerText = res.error || 'Error';
+    }).serverSubmitRequest(s.user, s.pass, 'inflow', rows);
+  });
+
+  // Outflow basics (receivers)
+  $('btnAddReceiver').addEventListener('click', ()=>{
+    const div = document.createElement('div'); div.style.display='flex'; div.style.gap='8px'; div.style.marginTop='8px';
+    const name = document.createElement('input'); name.placeholder='receiver name';
+    const qty = document.createElement('input'); qty.type='number'; qty.placeholder='qty'; qty.min=1;
+    div.appendChild(name); div.appendChild(qty);
+    $('receivers').appendChild(div);
+  });
+
+  // Submit Outflow
+  $('btnSubmitOut').addEventListener('click', ()=>{
+    const item = $('outItem').value; if(!item) return alert('select item');
+    const rows = Array.from(document.querySelectorAll('#receivers > div')).map(div=>{
+      const name = div.querySelectorAll('input')[0].value;
+      const qty = Number(div.querySelectorAll('input')[1].value) || 0;
+      return { date: $('outRequestDate').value || new Date().toISOString(), item, quantity: qty, party: name || '', location: '' };
+    }).filter(r=>r.quantity>0);
+    if(rows.length===0) return alert('add at least one receiver with qty');
+    const s = getSession();
+    google.script.run.withSuccessHandler(res=>{
+      if(res.success){ $('outMsg').innerText = 'Request submitted: ' + res.requestId; $('receivers').innerHTML=''; }
+      else $('outMsg').innerText = res.error || 'Error';
+    }).serverSubmitRequest(s.user, s.pass, 'outflow', rows);
+  });
+
+  // Requests dashboard (admin)
+  $('btnApplyFilters').addEventListener('click', ()=>{
+    const s = getSession();
+    google.script.run.withSuccessHandler(res=>{
+      if(!res.success) return alert(res.error || 'Error');
+      const pending = res.pending || [];
+      let html = pending.map(req=>{
+        return `<div style="border-bottom:1px solid rgba(255,255,255,0.06);padding:8px 0">
+          <strong>${req.requestId}</strong> by ${req.submittedBy} (${req.status})<br/>
+          ${req.items.map(it=>`- ${it.flowType} | ${it.item} x ${it.quantity}`).join('<br/>')}
+          <div style="margin-top:6px">
+            <button onclick="actOn('${req.requestId}','approve')">Approve</button>
+            <button onclick="actOn('${req.requestId}','reject')">Reject</button>
+          </div>
+        </div>`;
+      }).join('');
+      $('requestsArea').innerHTML = html || 'No pending';
+    }).serverListPending(s.user, s.pass);
+  });
+
+  // Expose function for inline buttons
+  window.actOn = function(requestId, decision){
+    const s = getSession();
+    if(!confirm('Proceed with ' + decision + ' ?')) return;
+    google.script.run.withSuccessHandler(res=>{
+      if(res.success){ alert('Processed'); $('btnApplyFilters').click(); }
+      else alert(res.error || 'Error');
+    }).serverActOnRequest(s.user, s.pass, requestId, decision);
+  };
+
+</script>
 </body>
 </html>

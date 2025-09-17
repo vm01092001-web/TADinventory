@@ -1,106 +1,522 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>NextGen Inventory</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@tailwindcss/forms"></script>
-  <script src="https://unpkg.com/feather-icons"></script>
-  <style>
-    body {
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-      font-family: 'Inter', sans-serif;
-    }
-    .glass {
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>✨ NextGen Inventory — Sexy AF UI</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+
+<!-- Chart.js for optional charts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  :root{
+    --bg1:#020617;
+    --bg2:#081027;
+    --glass: rgba(255,255,255,0.04);
+    --accent:#00ffe7;
+    --accent-2:#6b5cff;
+    --muted:#9aa4b2;
+    --ok:#34d399;
+    --danger:#ff6b6b;
+    --radius:16px;
+    --shadow:0 12px 40px rgba(0,0,0,0.6);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;background:linear-gradient(120deg,var(--bg1),var(--bg2));font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
+  /* container */
+  .app{display:flex;height:100vh;gap:24px;padding:28px}
+  /* sidebar */
+  .sidebar{width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:22px;backdrop-filter: blur(12px);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column}
+  .brand{font-family:Orbitron,system-ui;font-weight:700;color:var(--accent);font-size:20px;letter-spacing:1px;text-align:center;margin-bottom:18px}
+  .nav{display:flex;flex-direction:column;gap:10px}
+  .nav .item{padding:12px;border-radius:12px;color:#dfe7ee;cursor:pointer;transition:all .18s; text-align:center}
+  .nav .item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,255,231,0.06);background:rgba(255,255,255,0.03)}
+  .nav .item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,255,231,0.15)}
+  .who{margin-top:auto;font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid rgba(255,255,255,0.02)}
+  .login-box{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .login-box input{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:10px;color:#fff}
+  .btn{background:var(--accent);color:#001;padding:10px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+  /* main */
+  .main{flex:1;display:flex;flex-direction:column;gap:18px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .search{flex:1;display:flex;gap:8px;align-items:center}
+  .search input{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
+  .card h3{margin:0;font-size:14px;color:var(--muted);font-weight:600}
+  .card .big{font-size:28px;margin-top:8px;color:var(--accent);font-weight:800}
+  /* panels */
+  .panel{display:flex;gap:18px}
+  .panel-left{flex:1;display:flex;flex-direction:column;gap:12px}
+  .panel-right{width:420px}
+  /* forms */
+  .form-row{display:flex;gap:10px}
+  .form-row input,.form-row select{flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);color:#fff}
+  .small{font-size:13px;color:var(--muted)}
+  /* table */
+  table{width:100%;border-collapse:collapse;color:#e9f2f7}
+  th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px}
+  th{color:var(--muted);font-weight:600}
+  .status.pending{color:var(--accent)}
+  .status.approved{color:var(--ok)}
+  .status.rejected{color:var(--danger)}
+  /* modal */
+  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:60}
+  .modal .box{width:840px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.03)}
+  /* tiny */
+  .muted{color:var(--muted);font-size:13px}
+  .neon{color:var(--accent);text-shadow:0 4px 22px rgba(0,255,231,0.12)}
+  /* responsive */
+  @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} .panel-right{display:none} }
+  @media (max-width:760px){ .app{flex-direction:column;padding:12px} .sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto} .cards{grid-template-columns:repeat(1,1fr)} .main{padding:12px} }
+  /* toast */
+  .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:12px 16px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+</style>
 </head>
-<body class="flex items-center justify-center min-h-screen text-white">
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">NEON.INVENTORY</div>
+      <nav class="nav" id="nav">
+        <div class="item active" data-tab="items">📦 Items</div>
+        <div class="item" data-tab="inflow">⬆ Inflow</div>
+        <div class="item" data-tab="outflow">⬇ Outflow</div>
+        <div class="item admin-only" data-tab="requests" style="display:none">⚡ Requests</div>
+        <div class="item" data-tab="analytics">📊 Analytics</div>
+      </nav>
 
-  <div id="app" class="glass w-full max-w-lg p-8 shadow-xl">
-    <!-- Login -->
-    <div id="loginPage">
-      <h1 class="text-3xl font-bold text-center mb-6">🔐 Inventory Login</h1>
-      <input id="username" type="text" placeholder="Username" class="w-full mb-3 p-3 rounded bg-gray-800 text-white focus:outline-none">
-      <input id="password" type="password" placeholder="Password" class="w-full mb-3 p-3 rounded bg-gray-800 text-white focus:outline-none">
-      <button onclick="login()" class="w-full py-3 rounded bg-blue-500 hover:bg-blue-600 transition font-semibold">Login</button>
-      <p id="loginError" class="text-red-400 text-center mt-3 hidden">Invalid login</p>
-    </div>
+      <div class="who" id="who">Not signed</div>
 
-    <!-- Dashboard -->
-    <div id="dashboard" class="hidden">
-      <h2 class="text-2xl font-bold mb-4">📦 Inventory Dashboard</h2>
-      <div class="space-y-3">
-        <button onclick="loadItems()" class="w-full py-3 rounded bg-green-500 hover:bg-green-600 transition">Get Items</button>
-        <button onclick="showRequestForm()" class="w-full py-3 rounded bg-yellow-500 hover:bg-yellow-600 transition">Submit Request</button>
-        <button onclick="listPending()" class="w-full py-3 rounded bg-purple-500 hover:bg-purple-600 transition">Admin: Pending Requests</button>
-        <button onclick="logout()" class="w-full py-3 rounded bg-gray-700 hover:bg-gray-800 transition">Logout</button>
+      <div class="login-box">
+        <input id="loginUser" placeholder="username">
+        <input id="loginPass" type="password" placeholder="password">
+        <div style="display:flex;gap:8px">
+          <button id="btnLogin" class="btn">Login</button>
+          <button id="btnLogout" class="btn ghost" style="display:none">Logout</button>
+        </div>
       </div>
-      <div id="output" class="mt-6 text-sm"></div>
-    </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <div class="topbar">
+        <div class="search">
+          <input id="globalSearch" placeholder="Search items, requests, users..." oninput="applySearch(this.value)">
+        </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <div class="muted">Live</div>
+          <div class="neon" id="clock">--:--</div>
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <h3>Total Items</h3>
+          <div class="big" id="totalItems">--</div>
+          <div class="muted">Items in master list</div>
+        </div>
+        <div class="card">
+          <h3>Pending Requests</h3>
+          <div class="big" id="pendingCount">--</div>
+          <div class="muted">Requests awaiting approval</div>
+        </div>
+        <div class="card">
+          <h3>Nice Score</h3>
+          <div class="big">100%</div>
+          <div class="muted">UI: sexy mode enabled</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-left">
+          <!-- Items Tab -->
+          <div id="tab-items" class="card tab">
+            <h3>Manage Items</h3>
+            <div class="form-row" style="margin-top:12px">
+              <input id="newItem" placeholder="Add new item name">
+              <button id="btnAddItem" class="btn">Add</button>
+            </div>
+            <p class="muted" id="addItemMsg"></p>
+
+            <div style="margin-top:14px">
+              <h3 class="muted">Master List</h3>
+              <table id="itemsTable">
+                <thead><tr><th>Item</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Inflow Tab -->
+          <div id="tab-inflow" class="card tab" style="display:none">
+            <h3>Submit Inflow Request</h3>
+            <label class="small muted">Date</label>
+            <input id="inRequestDate" type="date">
+
+            <div id="inRows" style="margin-top:12px"></div>
+
+            <div style="display:flex;gap:10px;margin-top:12px">
+              <button id="btnAddInRow" class="btn">+ Add Item Row</button>
+              <button id="btnSubmitIn" class="btn" style="background:var(--accent-2)">Submit Inflow</button>
+            </div>
+            <p class="muted" id="inMsg"></p>
+          </div>
+
+          <!-- Outflow Tab -->
+          <div id="tab-outflow" class="card tab" style="display:none">
+            <h3>Submit Outflow Request</h3>
+            <label class="small muted">Date</label>
+            <input id="outRequestDate" type="date">
+
+            <label class="small muted" style="margin-top:8px">Item</label>
+            <select id="outItem"></select>
+
+            <label class="small muted" style="margin-top:8px">Total Quantity</label>
+            <input id="outTotal" type="number" min="1">
+
+            <h4 class="muted" style="margin-top:12px">Receivers</h4>
+            <div id="receivers"></div>
+
+            <div style="display:flex;gap:10px;margin-top:12px">
+              <button id="btnAddReceiver" class="btn">+ Add Receiver</button>
+              <button id="btnSubmitOut" class="btn" style="background:var(--accent-2)">Submit Outflow</button>
+            </div>
+            <p class="muted" id="outMsg"></p>
+          </div>
+
+          <!-- Requests Tab (admin) -->
+          <div id="tab-requests" class="card tab" style="display:none">
+            <h3>Requests Dashboard (Admin)</h3>
+            <div style="display:flex;gap:8px;margin-top:10px">
+              <input id="filterItem" placeholder="Filter item" class="small">
+              <input id="filterUser" placeholder="Filter user" class="small">
+              <button id="btnApplyFilters" class="btn ghost">Apply</button>
+            </div>
+            <div style="margin-top:12px">
+              <table id="requestsTable">
+                <thead><tr><th>Req. ID</th><th>Submitted By</th><th>Items</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-right">
+          <div class="card" id="analyticsCard">
+            <h3>Analytics</h3>
+            <canvas id="trendChart" height="180"></canvas>
+            <div class="muted" style="margin-top:8px">Quick trend demo</div>
+          </div>
+
+          <div class="card" style="margin-top:12px">
+            <h3>Quick Actions</h3>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn" onclick="loadItems()">Refresh Items</button>
+              <button class="btn ghost" onclick="loadPending()">Refresh Pending</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
+  <!-- modal placeholder -->
+  <div id="modalRoot"></div>
+
+  <!-- toast -->
+  <div id="toast" style="display:none" class="toast">Saved</div>
+
 <script>
-const API_URL = "https://script.google.com/macros/s/AKfycbxSWzhdYjp7YkvMcNW7_MBf-tAHhjtVzAG0WLjLovUXdlo8gNILymIccbRtKhJCNwJi/exec"; // Replace with Apps Script Web App URL
-let currentUser=null;
+/* ================== CONFIG ================== */
+const API_URL = "https://script.google.com/macros/s/AKfycbwwZniofDCmnQ-duDkuSViRvsHyK1oyHSXBKelhwfwE8Sg8V73GaL9OzqC-yE9UXaBQ/exec"; // <<-- Replace with your deployed Apps Script /exec URL
 
-// --- API helpers
-async function get(url){
-  const r=await fetch(API_URL+url);
-  return await r.json();
-}
+/* ================== Utils ================== */
+function $(id){return document.getElementById(id)}
+function toast(msg, ms=2500){ const t=$('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',ms); }
+function nowISO(){ return new Date().toISOString().slice(0,10); }
+function getSession(){ return JSON.parse(localStorage.getItem('session')||'null'); }
+function setSession(s){ localStorage.setItem('session', JSON.stringify(s)); }
+function clearSession(){ localStorage.removeItem('session'); }
+
+/* simple POST wrapper including credentials from session */
 async function post(data){
-  const r=await fetch(API_URL,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(data)
-  });
-  return await r.json();
-}
-
-// --- Auth
-async function login(){
-  const u=document.getElementById("username").value.trim();
-  const p=document.getElementById("password").value.trim();
-  const res=await post({action:"login",username:u,password:p});
-  if(res.success){
-    currentUser={u,p,isAdmin:res.isAdmin};
-    document.getElementById("loginPage").classList.add("hidden");
-    document.getElementById("dashboard").classList.remove("hidden");
-  }else{
-    document.getElementById("loginError").classList.remove("hidden");
+  try{
+    const session = getSession();
+    if(!session && data.action !== 'login') throw new Error('not authenticated');
+    // attach credentials for auth-required actions (simple scheme)
+    if(session){ data.username = session.user; data.password = session.pass; }
+    const res = await fetch(API_URL, {
+      method:'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  }catch(err){
+    console.error('post error',err);
+    throw err;
   }
 }
-function logout(){
-  currentUser=null;
-  document.getElementById("dashboard").classList.add("hidden");
-  document.getElementById("loginPage").classList.remove("hidden");
+async function get(url){
+  try{
+    const res = await fetch(API_URL + url);
+    return await res.json();
+  }catch(err){
+    console.error('get error',err);
+    throw err;
+  }
 }
 
-// --- Inventory
+/* ================== UI Wiring ================== */
+const navItems = document.querySelectorAll('.nav .item');
+navItems.forEach(n=>n.addEventListener('click', ()=> {
+  navItems.forEach(x=>x.classList.remove('active'));
+  n.classList.add('active');
+  showTab(n.dataset.tab);
+}));
+
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.style.display='none');
+  $('tab-'+tab).style.display='block';
+}
+showTab('items'); // initial
+
+/* Clock */
+setInterval(()=>{$('clock').innerText = new Date().toLocaleTimeString()}, 1000);
+
+/* ================== AUTH ================== */
+$('btnLogin').addEventListener('click', async ()=>{
+  const u = $('loginUser').value.trim();
+  const p = $('loginPass').value.trim();
+  if(!u || !p){ toast('enter username & password'); return; }
+  try{
+    const r = await post({action:'login', username:u, password:p});
+    if(r.success){ 
+      setSession({user:u, pass:p, isAdmin: r.isAdmin?true:false});
+      $('who').innerText = `Signed as ${u}${r.isAdmin ? ' (admin)' : ''}`;
+      $('btnLogin').style.display='none';
+      $('btnLogout').style.display='inline-block';
+      document.querySelectorAll('.admin-only').forEach(el=>el.style.display = r.isAdmin ? 'block' : 'none');
+      toast('Welcome, '+u);
+      // load data after login
+      await loadItems();
+      await loadPendingCount();
+    } else {
+      toast('Login failed');
+    }
+  }catch(err){
+    toast('Network error');
+  }
+});
+$('btnLogout').addEventListener('click', ()=>{
+  clearSession();
+  $('who').innerText = 'Not signed';
+  $('btnLogin').style.display='inline-block';
+  $('btnLogout').style.display='none';
+  document.querySelectorAll('.admin-only').forEach(el=>el.style.display='none');
+  toast('Logged out');
+});
+
+/* ================== ITEMS ================== */
 async function loadItems(){
-  const res=await get("?action=getItems");
-  showOutput(res);
-}
-async function showRequestForm(){
-  showOutput({form:"Coming soon: request form UI"});
-}
-async function listPending(){
-  if(!currentUser?.isAdmin){showOutput({error:"Not admin"});return;}
-  const res=await post({action:"listPending",username:currentUser.u,password:currentUser.p});
-  showOutput(res);
+  try{
+    const r = await get('?action=getItems');
+    if(!r.success){ toast('Failed to load items'); return; }
+    const items = r.items || [];
+    const tbody = document.querySelector('#itemsTable tbody'); tbody.innerHTML='';
+    items.forEach(it => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHTML(it)}</td>`;
+      tbody.appendChild(tr);
+    });
+    $('totalItems').innerText = items.length;
+    // populate selects
+    $('outItem').innerHTML = `<option value="">Select</option>` + items.map(i=>`<option>${escapeHTML(i)}</option>`).join('');
+    // also refresh rows in inflow rows
+    document.querySelectorAll('#inRows select.itemSel').forEach(sel=>{
+      const old = sel.value;
+      sel.innerHTML = `<option value="">Select</option>` + items.map(i=>`<option>${escapeHTML(i)}</option>`).join('');
+      if(old) sel.value = old;
+    });
+    buildTrendChart(items.length);
+  }catch(err){
+    console.error(err);
+    toast('Unable to load items (CORS/Network?)');
+  }
 }
 
-// --- Utils
-function showOutput(data){
-  document.getElementById("output").innerText=JSON.stringify(data,null,2);
+/* Add item */
+$('btnAddItem').addEventListener('click', async ()=>{
+  const nm = $('newItem').value.trim();
+  if(!nm){ $('addItemMsg').innerText = 'Enter item name'; return; }
+  try{
+    const session = getSession();
+    if(!session){ toast('Login required'); return; }
+    const r = await post({action:'addItem', itemName: nm});
+    if(r.success){ $('addItemMsg').innerText='Added ✓'; $('newItem').value=''; await loadItems(); toast('Item added') }
+    else $('addItemMsg').innerText = r.error || 'Error';
+  }catch(err){ $('addItemMsg').innerText='Network error'; }
+});
+
+/* ================== INFLOW FORM ================== */
+$('btnAddInRow').addEventListener('click', addInRow);
+function addInRow(pref = {}) {
+  const container = $('inRows');
+  const row = document.createElement('div');
+  row.style.display='flex'; row.style.gap='8px'; row.style.marginTop='8px';
+  row.innerHTML = `
+    <select class="itemSel" style="flex:2;"><option value="">Select</option></select>
+    <input class="inQty" type="number" min="1" placeholder="Qty" style="flex:1;" value="${pref.quantity||1}">
+    <input class="inParty" placeholder="Party" style="flex:1" value="${pref.party||''}">
+    <button class="btn ghost btnRemoveRow" style="flex:0">✕</button>
+  `;
+  container.appendChild(row);
+  // populate select
+  get('?action=getItems').then(r=>{
+    if(r.success){
+      const opts = `<option value="">Select</option>` + r.items.map(i=>`<option>${escapeHTML(i)}</option>`).join('');
+      row.querySelector('select.itemSel').innerHTML = opts;
+      if(pref.item) row.querySelector('select.itemSel').value = pref.item;
+    }
+  });
+  row.querySelector('.btnRemoveRow').addEventListener('click', ()=>row.remove());
 }
-</script>
-</body>
-</html>
+$('btnAddInRow').click(); // initial one
+
+$('btnSubmitIn').addEventListener('click', async ()=>{
+  const date = $('inRequestDate').value || nowISO();
+  const rows = Array.from(document.querySelectorAll('#inRows > div'));
+  const items = rows.map(r=>{
+    return {
+      date,
+      item: r.querySelector('select.itemSel').value,
+      quantity: Number(r.querySelector('.inQty').value || 0),
+      party: r.querySelector('.inParty').value || ''
+    };
+  }).filter(x=>x.item && x.quantity>0);
+  if(items.length === 0){ $('inMsg').innerText = 'Add valid rows'; return; }
+  try{
+    const r = await post({action:'submitRequest', type:'inflow', items});
+    if(r.success){ $('inMsg').innerText='Submitted ✓'; toast('Inflow request submitted'); // clear
+      $('inRows').innerHTML=''; addInRow(); $('inRequestDate').value=''; loadPendingCount();
+    } else $('inMsg').innerText = r.error || 'Error';
+  }catch(err){ $('inMsg').innerText='Network error'; }
+});
+
+/* ================== OUTFLOW FORM ================== */
+$('btnAddReceiver').addEventListener('click', addReceiver);
+function addReceiver(pref={}){
+  const container = $('receivers');
+  const row = document.createElement('div');
+  row.style.display='flex'; row.style.gap='8px'; row.style.marginTop='8px';
+  row.innerHTML = `
+    <input class="recvName" placeholder="Receiver" style="flex:2;" value="${pref.name||''}">
+    <input class="recvQty" type="number" min="1" placeholder="Qty" style="flex:1;" value="${pref.qty||1}">
+    <button class="btn ghost btnRemove" style="flex:0">✕</button>
+  `;
+  container.appendChild(row);
+  row.querySelector('.btnRemove').addEventListener('click', ()=>row.remove());
+}
+addReceiver(); // default one
+
+$('btnSubmitOut').addEventListener('click', async ()=>{
+  const date = $('outRequestDate').value || nowISO();
+  const item = $('outItem').value;
+  const total = Number($('outTotal').value || 0);
+  if(!item || total<=0){ $('outMsg').innerText='Item & total required'; return; }
+  const recs = Array.from(document.querySelectorAll('#receivers > div')).map(r=>({
+    name: r.querySelector('.recvName').value || '',
+    quantity: Number(r.querySelector('.recvQty').value || 0)
+  })).filter(x=>x.name && x.quantity>0);
+  // Flatten to items list as multiple rows (each receiver considered an item line)
+  const items = recs.map(r=>({date, item, quantity: r.quantity, party: r.name}));
+  if(items.length === 0){ $('outMsg').innerText='Add receivers'; return; }
+  try{
+    const res = await post({action:'submitRequest', type:'outflow', items});
+    if(res.success){ $('outMsg').innerText='Submitted ✓'; toast('Outflow submitted'); $('receivers').innerHTML=''; addReceiver(); $('outTotal').value=''; loadPendingCount(); }
+    else $('outMsg').innerText = res.error || 'Error';
+  }catch(err){ $('outMsg').innerText='Network error'; }
+});
+
+/* ================== PENDING REQUESTS (Admin) ================== */
+async function loadPending(){
+  try{
+    const session = getSession();
+    if(!session || !session.isAdmin){ toast('Admin only'); return; }
+    const r = await post({action:'listPending'});
+    if(!r.success){ toast('Failed to load pending'); return; }
+    renderPending(r.pending || []);
+  }catch(err){ toast('Network error'); }
+}
+async function loadPendingCount(){ // quick count
+  try{
+    const session = getSession();
+    if(!session || !session.isAdmin){ /* can't fetch detailed but we show quick */ return; }
+    const r = await post({action:'listPending'});
+    if(r.success){ $('pendingCount').innerText = (r.pending||[]).length; }
+  }catch(err){ console.warn(err); }
+}
+function renderPending(list){
+  const tbody = document.querySelector('#requestsTable tbody'); tbody.innerHTML='';
+  list.forEach(req=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHTML(req.requestId)}</td>
+      <td>${escapeHTML(req.submittedBy)}</td>
+      <td>${escapeHTML(req.items.map(i=>i.item+' x'+i.quantity).join(', '))}</td>
+      <td class="status ${req.status && req.status.toLowerCase()}">${escapeHTML(req.status)}</td>
+      <td>
+        <button class="btn" data-id="${escapeHTML(req.requestId)}" data-action="approve">Approve</button>
+        <button class="btn ghost" data-id="${escapeHTML(req.requestId)}" data-action="reject">Reject</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  // attach events
+  tbody.querySelectorAll('button').forEach(btn=>{
+    btn.addEventListener('click', async (ev)=>{
+      const id = btn.dataset.id, action = btn.dataset.action;
+      try{
+        const r = await post({action:'actOnRequest', requestId:id, decision: action==='approve' ? 'approve' : 'reject'});
+        if(r.success){ toast(`${action}ed ${r.processed}`); loadPending(); loadPendingCount(); }
+        else toast(r.error || 'Error');
+      }catch(err){ toast('Network error'); }
+    });
+  });
+}
+
+/* Helper to call listPending (wrap with auth) */
+async function listPending(){
+  try{
+    const session = getSession();
+    if(!session){ toast('Login as admin'); return; }
+    const r = await post({action:'listPending'});
+    if(r.success) renderPending(r.pending || []);
+    else toast(r.error || 'Error');
+  }catch(err){ toast('Network error'); }
+}
+
+/* ================== Search & Filters ================== */
+function applySearch(s){
+  s = (s||'').toLowerCase();
+  // filter items table rows
+  document.querySelectorAll('#itemsTable tbody tr').forEach(tr=>{
+    const text = tr.innerText.toLowerCase();
+    tr.style.display = text.includes(s) ? '' : 'none';
+  });
+}
+
+/* ================== Chart (simple demo) ================== */
+let trendChart = null;
+function buildTrendChart(itemsCount=0){
+  const ctx = $('trendChart').getContext('2d');
+  const labels = ['-4d','-3d','-2d','-1d','today'];
+  const data = [itemsCount-4, itemsCount-2, itemsCount-1, itemsCount-0.5, itemsCount].map(x=>Math.max(0, Math.round(x)));
+  if(trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets: [{ label:'Items',]()

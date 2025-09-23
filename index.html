@@ -27,60 +27,65 @@
   }
   *{box-sizing:border-box;transition: all 0.3s ease;}
   html,body{height:100%;margin:0;background:linear-gradient(120deg,var(--bg1),var(--bg2));font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#dfe7ee;}
-  .app{display:flex;height:100vh;gap:24px;padding:28px;background:radial-gradient(circle at top left, rgba(0,255,231,0.05), transparent);}
-  .sidebar{width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:22px;backdrop-filter: blur(12px);box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;transition:transform 0.3s;}
+  .app{display:flex;height:100vh;gap:24px;padding:28px;background:radial-gradient(circle at top left, rgba(0,255,231,0.05), transparent);animation:fadeIn 1s ease;}
+  .sidebar{width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:22px;backdrop-filter: blur(12px);box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;}
   .sidebar:hover{transform:scale(1.02);}
-  .brand{font-family:Orbitron,system-ui;font-weight:700;color:var(--accent);font-size:20px;letter-spacing:1px;text-align:center;margin-bottom:18px;text-shadow:var(--neon-glow);}
-  .nav{display:flex;flex-direction:column;gap:10px}
-  .nav .item{padding:12px;border-radius:12px;color:#dfe7ee;cursor:pointer;transition:all .18s; text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.3);}
-  .nav .item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,255,231,0.06);background:rgba(255,255,255,0.03);color:var(--accent);}
-  .nav .item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,255,231,0.15);text-shadow:none;}
-  .who{margin-top:auto;font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid rgba(255,255,255,0.02)}
-  .login-box{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-  .login-box input{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:10px;color:#fff;transition:border-color 0.3s;}
-  .login-box input:focus{border-color:var(--accent);outline:none;}
-  .btn{background:var(--accent);color:#001;padding:10px;border-radius:10px;border:none;font-weight:700;cursor:pointer;transition:transform 0.2s, box-shadow 0.2s;}
+  .brand{font-family:Orbitron,system-ui;font-weight:700;color:var(--accent);font-size:24px;letter-spacing:2px;text-align:center;margin-bottom:18px;text-shadow:var(--neon-glow);animation:pulse 2s infinite;}
+  .nav{display:flex;flex-direction:column;gap:10px;}
+  .nav .item{padding:14px;border-radius:12px;color:#dfe7ee;cursor:pointer;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.3);font-weight:500;}
+  .nav .item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,255,231,0.1);background:rgba(255,255,255,0.05);color:var(--accent);}
+  .nav .item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,255,231,0.2);}
+  .who{margin-top:auto;font-size:14px;color:var(--muted);padding-top:12px;border-top:1px solid rgba(255,255,255,0.02);text-align:center;}
+  .login-box{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+  .login-box input{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);padding:12px;border-radius:12px;color:#fff;}
+  .login-box input:focus{border-color:var(--accent);outline:none;box-shadow:var(--neon-glow);}
+  .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;}
   .btn:hover{transform:scale(1.05);box-shadow:var(--neon-glow);}
-  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
-  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);}
-  .main{flex:1;display:flex;flex-direction:column;gap:18px}
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
-  .search{flex:1;display:flex;gap:8px;align-items:center}
-  .search input{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff;transition:border-color 0.3s;}
-  .search input:focus{border-color:var(--accent);outline:none;}
-  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.03);transition:transform 0.3s;}
+  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted);}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--neon-glow);}
+  .main{flex:1;display:flex;flex-direction:column;gap:20px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .search{flex:1;display:flex;gap:10px;align-items:center;}
+  .search input{flex:1;padding:14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);color:#fff;}
+  .search input:focus{border-color:var(--accent);outline:none;box-shadow:var(--neon-glow);}
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:16px;padding:20px;box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.05);}
   .card:hover{transform:scale(1.02);}
-  .card h3{margin:0;font-size:14px;color:var(--muted);font-weight:600}
-  .card .big{font-size:28px;margin-top:8px;color:var(--accent);font-weight:800;text-shadow:var(--neon-glow);}
-  .panel{display:flex;gap:18px}
-  .panel-left{flex:1;display:flex;flex-direction:column;gap:12px}
-  .panel-right{width:420px}
-  .form-row{display:flex;gap:10px}
-  .form-row input,.form-row select{flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);color:#fff;transition:border-color 0.3s;}
-  .form-row input:focus,.form-row select:focus{border-color:var(--accent);outline:none;}
-  .small{font-size:13px;color:var(--muted)}
-  table{width:100%;border-collapse:collapse;color:#e9f2f7}
-  th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px;transition:background 0.3s;}
-  tr:hover{background:rgba(255,255,255,0.02);}
-  th{color:var(--muted);font-weight:600}
-  .status.pending{color:var(--accent)}
-  .status.approved{color:var(--ok)}
-  .status.rejected{color:var(--danger)}
-  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:60;transition:opacity 0.3s;}
-  .modal .box{width:840px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.03);transform:scale(0.95);transition:transform 0.3s;}
-  .modal.show .box{transform:scale(1);}
-  .muted{color:var(--muted);font-size:13px}
-  .neon{color:var(--accent);text-shadow:0 4px 22px rgba(0,255,231,0.12)}
-  @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} .panel-right{display:none} }
+  .card h3{margin:0;font-size:16px;color:var(--muted);font-weight:600;}
+  .card .big{font-size:32px;margin-top:10px;color:var(--accent);font-weight:800;text-shadow:var(--neon-glow);}
+  .panel{display:flex;gap:20px;}
+  .panel-left{flex:1;display:flex;flex-direction:column;gap:15px;}
+  .panel-right{width:420px;}
+  .form-row{display:flex;gap:12px;}
+  .form-row input,.form-row select{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);color:#fff;}
+  .form-row input:focus,.form-row select:focus{border-color:var(--accent);outline:none;box-shadow:var(--neon-glow);}
+  .small{font-size:14px;color:var(--muted);}
+  table{width:100%;border-collapse:collapse;color:#e9f2f7;}
+  th,td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;}
+  tr:hover{background:rgba(255,255,255,0.03);}
+  th{color:var(--muted);font-weight:600;}
+  .status.pending{color:var(--accent);font-weight:600;}
+  .status.approved{color:var(--ok);font-weight:600;}
+  .status.rejected{color:var(--danger);font-weight:600;}
+  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:100;}
+  .modal .box{width:840px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:16px;padding:20px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.05);animation:popIn 0.3s ease;}
+  .muted{color:var(--muted);font-size:14px;}
+  .neon{color:var(--accent);text-shadow:0 4px 22px rgba(0,255,231,0.15);}
+
+  /* Animations */
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes popIn{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.8;}}
+  @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr);} .panel-right{display:none;}}
   @media (max-width:760px){ 
-    .app{flex-direction:column;padding:12px} 
-    .sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto} 
-    .cards{grid-template-columns:repeat(1,1fr)} 
-    .main{padding:12px}
+    .app{flex-direction:column;padding:12px;} 
+    .sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto;padding:12px;} 
+    .cards{grid-template-columns:1fr;} 
+    .main{padding:12px;}
+    .brand{font-size:18px;}
   }
-  .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:12px 16px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6);opacity:0;transition:opacity 0.3s;}
-  .toast.show{opacity:1;}
+  .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:14px 20px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6);opacity:0;}
+  .toast.show{opacity:1;animation:popIn 0.3s ease;}
 </style>
 </head>
 <body>
@@ -95,12 +100,10 @@
         <div class="item admin-only" data-tab="requests" style="display:none">⚡ Requests</div>
         <div class="item" data-tab="analytics">📊 Analytics</div>
       </nav>
-
       <div class="who" id="who">Not signed</div>
-
       <div class="login-box">
-        <input id="loginUser" placeholder="username">
-        <input id="loginPass" type="password" placeholder="password">
+        <input id="loginUser" placeholder="Username">
+        <input id="loginPass" type="password" placeholder="Password">
         <div style="display:flex;gap:8px">
           <button id="btnLogin" class="btn">Login</button>
           <button id="btnLogout" class="btn ghost" style="display:none">Logout</button>
@@ -143,7 +146,6 @@
               <button id="btnAddItem" class="btn">Add</button>
             </div>
             <p class="muted" id="addItemMsg"></p>
-
             <div style="margin-top:14px">
               <h3 class="muted">Master List</h3>
               <table id="itemsTable">
@@ -158,9 +160,7 @@
             <h3>Submit Inflow Request</h3>
             <label class="small muted">Date</label>
             <input id="inRequestDate" type="date">
-
             <div id="inRows" style="margin-top:12px"></div>
-
             <div style="display:flex;gap:10px;margin-top:12px">
               <button id="btnAddInRow" class="btn">+ Add Item Row</button>
               <button id="btnSubmitIn" class="btn" style="background:var(--accent-2)">Submit Inflow</button>
@@ -173,19 +173,14 @@
             <h3>Submit Outflow Request</h3>
             <label class="small muted">Date</label>
             <input id="outRequestDate" type="date">
-
             <label class="small muted" style="margin-top:8px">Item</label>
             <select id="outItem"></select>
-
             <label class="small muted" style="margin-top:8px">Total Quantity</label>
             <input id="outTotal" type="number" min="1">
-
             <label class="small muted" style="margin-top:8px">Location</label>
             <input id="outLocation" placeholder="Location (e.g., Warehouse A)">
-
             <h4 class="muted" style="margin-top:12px">Receivers</h4>
             <div id="receivers"></div>
-
             <div style="display:flex;gap:10px;margin-top:12px">
               <button id="btnAddReceiver" class="btn">+ Add Receiver</button>
               <button id="btnSubmitOut" class="btn" style="background:var(--accent-2)">Submit Outflow</button>
@@ -213,17 +208,16 @@
           <div id="tab-analytics" class="card tab" style="display:none">
             <h3>Analytics</h3>
             <canvas id="trendChart" height="180"></canvas>
-            <div class="muted" style="margin-top:8px">Quick trend demo</div>
+            <div class="muted" style="margin-top:8px">Inventory trend analysis</div>
           </div>
         </div>
 
         <div class="panel-right">
-          <div class="card" id="analyticsCard">
-            <h3>Analytics</h3>
+          <div class="card">
+            <h3>Analytics Snapshot</h3>
             <canvas id="trendChart" height="180"></canvas>
-            <div class="muted" style="margin-top:8px">Quick trend demo</div>
+            <div class="muted" style="margin-top:8px">Quick trend overview</div>
           </div>
-
           <div class="card" style="margin-top:12px">
             <h3>Quick Actions</h3>
             <div style="display:flex;gap:8px;margin-top:12px">
@@ -236,55 +230,85 @@
     </main>
   </div>
 
-  <!-- modal placeholder -->
+  <!-- Modal Placeholder -->
   <div id="modalRoot"></div>
 
-  <!-- toast -->
+  <!-- Toast -->
   <div id="toast" style="display:none" class="toast">Saved</div>
 
 <script>
 /* ================== CONFIG ================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbxqOyTq7Vz6oRkbIWcvi3R1kpOhtXSsVAzugJmBaIzhn1ZAvfzGHgkz5lajaHgB3cKDVw/exec"; // Replace with your deployed Apps Script /exec URL
+const API_URL = "https://script.google.com/macros/s/AKfycbyGWm-JwhqKbNak4c86ktUimSyJ1xSB1c4PsbiKInPj1rjX-ziU7KnTeZvJOKdR6VCo7w/exec"; // Your Apps Script URL
 
 /* ================== Utils ================== */
 function $(id){ return document.getElementById(id); }
-function toast(msg, ms=2500){ const t=$('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),ms); }
+function toast(msg, ms=2500){ 
+  const t = $('toast'); 
+  t.innerText = msg; 
+  t.classList.add('show'); 
+  setTimeout(() => t.classList.remove('show'), ms); 
+}
 function nowISO(){ return new Date().toISOString().slice(0,10); }
-function getSession(){ return JSON.parse(localStorage.getItem('session')||'null'); }
-function setSession(s){ localStorage.setItem('session', JSON.stringify({user: s.user, isAdmin: s.isAdmin})); } // Avoid storing password
+function getSession(){ return JSON.parse(localStorage.getItem('session') || 'null'); }
+function setSession(s){ localStorage.setItem('session', JSON.stringify({user: s.user, isAdmin: s.isAdmin})); }
 function clearSession(){ localStorage.removeItem('session'); }
 function escapeHTML(str){ return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[m]); }
 
 /* Simple POST wrapper including credentials from session */
-async function post(data){
-  try{
+async function post(data) {
+  console.log('Sending POST request:', data); // Debug: Log request payload
+  try {
     const session = getSession();
-    if(!session && data.action !== 'login') throw new Error('Not authenticated');
-    if(session && data.action !== 'login'){ 
+    if (!session && data.action !== 'login') {
+      console.warn('No session, action:', data.action);
+      throw new Error('Not authenticated');
+    }
+    if (session && data.action !== 'login') {
       data.username = session.user;
-      // Re-authenticate by prompting for password (or use a token-based approach in production)
+      // Note: Password prompt is insecure; consider token-based auth in production
       data.password = prompt('Re-enter password for ' + session.user) || '';
     }
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: {'Content-Type': 'text/plain'},
+      headers: { 'Content-Type': 'text/plain' }, // Avoid preflight for CORS
       body: JSON.stringify(data)
     });
+    console.log('POST response status:', res.status); // Debug: Log response status
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('Response error:', text);
+      throw new Error(`HTTP error! Status: ${res.status}, Response: ${text}`);
+    }
     const result = await res.json();
-    if(result.error === 'bad auth'){ clearSession(); initSession(); toast('Session expired, please log in again'); }
+    console.log('POST response data:', result); // Debug: Log response data
+    if (result.error === 'bad auth') {
+      clearSession();
+      initSession();
+      toast('Session expired, please log in again');
+    }
     return result;
-  }catch(err){
-    console.error('post error', err);
+  } catch (err) {
+    console.error('POST error:', err); // Debug: Log any errors
     toast('Network error: ' + err.message);
     throw err;
   }
 }
-async function get(url){
-  try{
+
+async function get(url) {
+  console.log('Sending GET request:', url); // Debug: Log request URL
+  try {
     const res = await fetch(API_URL + url);
-    return await res.json();
-  }catch(err){
-    console.error('get error', err);
+    console.log('GET response status:', res.status); // Debug: Log response status
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('GET response error:', text);
+      throw new Error(`HTTP error! Status: ${res.status}, Response: ${text}`);
+    }
+    const result = await res.json();
+    console.log('GET response data:', result); // Debug: Log response data
+    return result;
+  } catch (err) {
+    console.error('GET error:', err); // Debug: Log any errors
     toast('Network error: ' + err.message);
     throw err;
   }
@@ -298,57 +322,65 @@ navItems.forEach(n => n.addEventListener('click', () => {
   showTab(n.dataset.tab);
 }));
 
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach(t => t.style.display='none');
-  $(`tab-${tab}`).style.display='block';
+function showTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
+  $(`tab-${tab}`).style.display = 'block';
 }
-showTab('items'); // initial
+showTab('items'); // Initial tab
 
 /* Clock */
 setInterval(() => { $('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
 
 /* Initialize session state */
-function initSession(){
+function initSession() {
   const session = getSession();
-  if(session){
+  if (session) {
     $('who').innerText = `Signed as ${session.user}${session.isAdmin ? ' (admin)' : ''}`;
-    $('btnLogin').style.display='none';
-    $('btnLogout').style.display='inline-block';
+    $('btnLogin').style.display = 'none';
+    $('btnLogout').style.display = 'inline-block';
     document.querySelectorAll('.admin-only').forEach(el => el.style.display = session.isAdmin ? 'block' : 'none');
     loadItems();
     loadPendingCount();
   } else {
     $('who').innerText = 'Not signed';
-    $('btnLogin').style.display='inline-block';
-    $('btnLogout').style.display='none';
-    document.querySelectorAll('.admin-only').forEach(el => el.style.display='none');
+    $('btnLogin').style.display = 'inline-block';
+    $('btnLogout').style.display = 'none';
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
   }
 }
-initSession(); // Run on page load
+initSession();
 
 /* ================== AUTH ================== */
 $('btnLogin').addEventListener('click', async () => {
   const u = $('loginUser').value.trim();
   const p = $('loginPass').value.trim();
-  if(!u || !p){ toast('Enter username and password'); return; }
-  try{
-    const r = await post({action: 'login', username: u, password: p});
-    if(r.success){
-      setSession({user: u, isAdmin: r.isAdmin || false});
+  console.log('Login attempt:', { username: u, password: p }); // Debug: Log login attempt
+  if (!u || !p) {
+    toast('Enter username and password');
+    console.warn('Login failed: Empty username or password');
+    return;
+  }
+  try {
+    const r = await post({ action: 'login', username: u, password: p });
+    if (r.success) {
+      setSession({ user: u, isAdmin: r.isAdmin || false });
       $('who').innerText = `Signed as ${u}${r.isAdmin ? ' (admin)' : ''}`;
-      $('btnLogin').style.display='none';
-      $('btnLogout').style.display='inline-block';
+      $('btnLogin').style.display = 'none';
+      $('btnLogout').style.display = 'inline-block';
       document.querySelectorAll('.admin-only').forEach(el => el.style.display = r.isAdmin ? 'block' : 'none');
       toast('Welcome, ' + u);
       await loadItems();
       await loadPendingCount();
     } else {
       toast(r.error || 'Login failed');
+      console.warn('Login failed:', r.error);
     }
-  }catch(err){
+  } catch (err) {
     toast('Network error');
+    console.error('Login error:', err);
   }
 });
+
 $('btnLogout').addEventListener('click', () => {
   clearSession();
   initSession();
@@ -356,10 +388,13 @@ $('btnLogout').addEventListener('click', () => {
 });
 
 /* ================== ITEMS ================== */
-async function loadItems(){
-  try{
+async function loadItems() {
+  try {
     const r = await get('?action=getItems');
-    if(!r.success){ toast(r.error || 'Failed to load items'); return; }
+    if (!r.success) {
+      toast(r.error || 'Failed to load items');
+      return;
+    }
     const items = r.items || [];
     const tbody = document.querySelector('#itemsTable tbody');
     tbody.innerHTML = '';
@@ -375,21 +410,24 @@ async function loadItems(){
     document.querySelectorAll('#inRows select.itemSel').forEach(sel => {
       const old = sel.value;
       sel.innerHTML = itemOptions;
-      if(old) sel.value = old;
+      if (old) sel.value = old;
     });
     buildTrendChart(items.length);
-  }catch(err){
-    toast('Unable to load items (CORS/Network?)');
+  } catch (err) {
+    toast('Unable to load items');
   }
 }
 
 /* Add item */
 $('btnAddItem').addEventListener('click', async () => {
   const nm = $('newItem').value.trim();
-  if(!nm){ $('addItemMsg').innerText = 'Enter item name'; return; }
-  try{
-    const r = await post({action: 'addItem', itemName: nm});
-    if(r.success){
+  if (!nm) {
+    $('addItemMsg').innerText = 'Enter item name';
+    return;
+  }
+  try {
+    const r = await post({ action: 'addItem', itemName: nm });
+    if (r.success) {
       $('addItemMsg').innerText = 'Added ✓';
       $('newItem').value = '';
       await loadItems();
@@ -397,7 +435,7 @@ $('btnAddItem').addEventListener('click', async () => {
     } else {
       $('addItemMsg').innerText = r.error || 'Error';
     }
-  }catch(err){
+  } catch (err) {
     $('addItemMsg').innerText = 'Network error';
   }
 });
@@ -417,12 +455,11 @@ function addInRow(pref = {}) {
     <button class="btn ghost btnRemoveRow" style="flex:0">✕</button>
   `;
   container.appendChild(row);
-  // Populate select
   get('?action=getItems').then(r => {
-    if(r.success){
+    if (r.success) {
       const opts = `<option value="">Select</option>` + r.items.map(i => `<option>${escapeHTML(i)}</option>`).join('');
       row.querySelector('select.itemSel').innerHTML = opts;
-      if(pref.item) row.querySelector('select.itemSel').value = pref.item;
+      if (pref.item) row.querySelector('select.itemSel').value = pref.item;
     }
   });
   row.querySelector('.btnRemoveRow').addEventListener('click', () => row.remove());
@@ -437,12 +474,15 @@ $('btnSubmitIn').addEventListener('click', async () => {
     item: r.querySelector('select.itemSel').value,
     quantity: Number(r.querySelector('.inQty').value || 0),
     party: r.querySelector('.inParty').value.trim(),
-    location: '' // Required by backend, empty for inflow
+    location: ''
   })).filter(x => x.item && x.quantity > 0);
-  if(items.length === 0){ $('inMsg').innerText = 'Add valid rows'; return; }
-  try{
-    const r = await post({action: 'submitRequest', type: 'inflow', items});
-    if(r.success){
+  if (items.length === 0) {
+    $('inMsg').innerText = 'Add valid rows';
+    return;
+  }
+  try {
+    const r = await post({ action: 'submitRequest', type: 'inflow', items });
+    if (r.success) {
       $('inMsg').innerText = 'Submitted ✓';
       toast('Inflow request submitted');
       $('inRows').innerHTML = '';
@@ -452,14 +492,14 @@ $('btnSubmitIn').addEventListener('click', async () => {
     } else {
       $('inMsg').innerText = r.error || 'Error';
     }
-  }catch(err){
+  } catch (err) {
     $('inMsg').innerText = 'Network error';
   }
 });
 
 /* ================== OUTFLOW FORM ================== */
 $('btnAddReceiver').addEventListener('click', () => addReceiver());
-function addReceiver(pref = {}){
+function addReceiver(pref = {}) {
   const container = $('receivers');
   const row = document.createElement('div');
   row.style.display = 'flex';
@@ -473,25 +513,34 @@ function addReceiver(pref = {}){
   container.appendChild(row);
   row.querySelector('.btnRemove').addEventListener('click', () => row.remove());
 }
-addReceiver(); // Default one
+addReceiver();
 
 $('btnSubmitOut').addEventListener('click', async () => {
   const date = $('outRequestDate').value || nowISO();
   const item = $('outItem').value;
   const total = Number($('outTotal').value || 0);
   const location = $('outLocation').value.trim();
-  if(!item || total <= 0 || !location){ $('outMsg').innerText = 'Item, total, and location required'; return; }
+  if (!item || total <= 0 || !location) {
+    $('outMsg').innerText = 'Item, total, and location required';
+    return;
+  }
   const recs = Array.from(document.querySelectorAll('#receivers > div')).map(r => ({
     name: r.querySelector('.recvName').value.trim(),
     quantity: Number(r.querySelector('.recvQty').value || 0)
   })).filter(x => x.name && x.quantity > 0);
   const sumQty = recs.reduce((sum, r) => sum + r.quantity, 0);
-  if(sumQty !== total){ $('outMsg').innerText = `Receiver quantities (${sumQty}) must match total (${total})`; return; }
-  if(recs.length === 0){ $('outMsg').innerText = 'Add receivers'; return; }
-  const items = recs.map(r => ({date, item, quantity: r.quantity, party: r.name, location}));
-  try{
-    const r = await post({action: 'submitRequest', type: 'outflow', items});
-    if(r.success){
+  if (sumQty !== total) {
+    $('outMsg').innerText = `Receiver quantities (${sumQty}) must match total (${total})`;
+    return;
+  }
+  if (recs.length === 0) {
+    $('outMsg').innerText = 'Add receivers';
+    return;
+  }
+  const items = recs.map(r => ({ date, item, quantity: r.quantity, party: r.name, location }));
+  try {
+    const r = await post({ action: 'submitRequest', type: 'outflow', items });
+    if (r.success) {
       $('outMsg').innerText = 'Submitted ✓';
       toast('Outflow request submitted');
       $('receivers').innerHTML = '';
@@ -502,41 +551,49 @@ $('btnSubmitOut').addEventListener('click', async () => {
     } else {
       $('outMsg').innerText = r.error || 'Error';
     }
-  }catch(err){
+  } catch (err) {
     $('outMsg').innerText = 'Network error';
   }
 });
 
 /* ================== PENDING REQUESTS (Admin) ================== */
-async function loadPending(){
-  try{
+async function loadPending() {
+  try {
     const session = getSession();
-    if(!session || !session.isAdmin){ toast('Admin only'); return; }
-    const r = await post({action: 'listPending'});
-    if(!r.success){ toast(r.error || 'Failed to load pending'); return; }
+    if (!session || !session.isAdmin) {
+      toast('Admin only');
+      return;
+    }
+    const r = await post({ action: 'listPending' });
+    if (!r.success) {
+      toast(r.error || 'Failed to load pending');
+      return;
+    }
     renderPending(r.pending || []);
-  }catch(err){
+  } catch (err) {
     toast('Network error');
   }
 }
-async function loadPendingCount(){
-  try{
+
+async function loadPendingCount() {
+  try {
     const session = getSession();
-    if(!session || !session.isAdmin){
+    if (!session || !session.isAdmin) {
       $('pendingCount').innerText = '--';
       return;
     }
-    const r = await post({action: 'listPending'});
-    if(r.success){
+    const r = await post({ action: 'listPending' });
+    if (r.success) {
       $('pendingCount').innerText = (r.pending || []).length;
     } else {
       $('pendingCount').innerText = '--';
     }
-  }catch(err){
+  } catch (err) {
     console.warn('loadPendingCount error', err);
   }
 }
-function renderPending(list){
+
+function renderPending(list) {
   const tbody = document.querySelector('#requestsTable tbody');
   tbody.innerHTML = '';
   list.forEach(req => {
@@ -548,4 +605,76 @@ function renderPending(list){
       <td class="status ${req.status && req.status.toLowerCase()}">${escapeHTML(req.status)}</td>
       <td>
         <button class="btn" data-id="${escapeHTML(req.requestId)}" data-action="approve">Approve</button>
-        <button class="btn ghost
+        <button class="btn ghost" data-id="${escapeHTML(req.requestId)}" data-action="reject">Reject</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id, action = btn.dataset.action;
+      try {
+        const r = await post({ action: 'actOnRequest', requestId: id, decision: action });
+        if (r.success) {
+          toast(`${action.charAt(0).toUpperCase() + action.slice(1)}ed ${r.processed} rows`);
+          loadPending();
+          loadPendingCount();
+        } else {
+          toast(r.error || 'Error');
+        }
+      } catch (err) {
+        toast('Network error');
+      }
+    });
+  });
+}
+
+/* ================== Search & Filters ================== */
+function applySearch(s) {
+  s = (s || '').toLowerCase();
+  document.querySelectorAll('#itemsTable tbody tr').forEach(tr => {
+    const text = tr.innerText.toLowerCase();
+    tr.style.display = text.includes(s) ? '' : 'none';
+  });
+  document.querySelectorAll('#requestsTable tbody tr').forEach(tr => {
+    const text = tr.innerText.toLowerCase();
+    tr.style.display = text.includes(s) ? '' : 'none';
+  });
+}
+
+/* ================== Chart ================== */
+let trendChart = null;
+function buildTrendChart(itemsCount = 0) {
+  const ctx = $('trendChart').getContext('2d');
+  const labels = ['-4d', '-3d', '-2d', '-1d', 'Today'];
+  const data = [itemsCount - 4, itemsCount - 3, itemsCount - 2, itemsCount - 1, itemsCount].map(x => Math.max(0, Math.round(x)));
+  if (trendChart) trendChart.destroy();
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Items (Demo)',
+        data,
+        borderColor: 'rgba(0, 255, 231, 0.8)',
+        backgroundColor: 'rgba(0, 255, 231, 0.2)',
+        fill: true,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, title: { display: true, text: 'Item Count', color: '#9aa4b2' } },
+        x: { title: { display: true, text: 'Days', color: '#9aa4b2' } }
+      },
+      plugins: {
+        legend: { labels: { color: '#9aa4b2' } },
+        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#00ffe7', bodyColor: '#fff' }
+      }
+    }
+  });
+}
+</script>
+</body>
+</html>

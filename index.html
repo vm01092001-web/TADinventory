@@ -6,86 +6,92 @@
 <title>✨ TAD.INVENTORY</title>
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=stylesheet">
 
 <!-- Chart.js for analytics -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-  :root{
-    --bg1:#020617;
-    --bg2:#081027;
-    --glass: rgba(255,255,255,0.04);
-    --accent:#00ffe7;
-    --accent-2:#6b5cff;
-    --muted:#9aa4b2;
-    --ok:#34d399;
-    --danger:#ff6b6b;
-    --radius:16px;
-    --shadow:0 12px 40px rgba(0,0,0,0.6);
-    --neon-glow: 0 0 10px var(--accent), 0 0 20px var(--accent-2);
+  :root {
+    --bg1: #020617;
+    --bg2: #081027;
+    --glass: rgba(255,255,255,0.05);
+    --accent: #00ffe7;
+    --accent-2: #6b5cff;
+    --muted: #9aa4b2;
+    --ok: #34d399;
+    --danger: #ff6b6b;
+    --radius: 16px;
+    --shadow: 0 12px 40px rgba(0,0,0,0.6);
+    --neon-glow: 0 0 12px var(--accent), 0 0 24px var(--accent-2);
+    --rabbit-blue: #1e90ff;
   }
-  *{box-sizing:border-box;transition: all 0.3s ease;}
-  html,body{height:100%;margin:0;background:linear-gradient(120deg,var(--bg1),var(--bg2));font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#dfe7ee;}
-  .app{display:flex;height:100vh;gap:24px;padding:28px;background:radial-gradient(circle at top left, rgba(0,255,231,0.05), transparent);animation:fadeIn 1s ease;}
-  .sidebar{width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:22px;backdrop-filter: blur(12px);box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;}
-  .sidebar:hover{transform:scale(1.02);}
-  .brand{font-family:Orbitron,system-ui;font-weight:700;color:var(--accent);font-size:24px;letter-spacing:2px;text-align:center;margin-bottom:18px;text-shadow:var(--neon-glow);animation:pulse 2s infinite;}
-  .nav{display:flex;flex-direction:column;gap:10px;}
-  .nav .item{padding:14px;border-radius:12px;color:#dfe7ee;cursor:pointer;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.3);font-weight:500;}
-  .nav .item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,255,231,0.1);background:rgba(255,255,255,0.05);color:var(--accent);}
-  .nav .item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,255,231,0.2);}
-  .who{margin-top:auto;font-size:14px;color:var(--muted);padding-top:12px;border-top:1px solid rgba(255,255,255,0.02);text-align:center;}
-  .login-box{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
-  .login-box input{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.05);padding:12px;border-radius:12px;color:#fff;}
-  .login-box input:focus{border-color:var(--accent);outline:none;box-shadow:var(--neon-glow);}
-  .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;padding:12px;border-radius:12px;border:none;font-weight:700;cursor:pointer;}
-  .btn:hover{transform:scale(1.05);box-shadow:var(--neon-glow);}
-  .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.1);color:var(--muted);}
-  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--neon-glow);}
-  .main{flex:1;display:flex;flex-direction:column;gap:20px;}
-  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;}
-  .search{flex:1;display:flex;gap:10px;align-items:center;}
-  .search input{flex:1;padding:14px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);color:#fff;}
-  .search input:focus{border-color:var(--accent);outline:none;box-shadow:var(--neon-glow);}
-  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:16px;padding:20px;box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.05);}
-  .card:hover{transform:scale(1.02);}
-  .card h3{margin:0;font-size:16px;color:var(--muted);font-weight:600;}
-  .card .big{font-size:32px;margin-top:10px;color:var(--accent);font-weight:800;text-shadow:var(--neon-glow);}
-  .panel{display:flex;gap:20px;}
-  .panel-left{flex:1;display:flex;flex-direction:column;gap:15px;}
-  .panel-right{width:420px;}
-  .form-row{display:flex;gap:12px;}
-  .form-row input,.form-row select{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);color:#fff;}
-  .form-row input:focus,.form-row select:focus{border-color:var(--accent);outline:none;box-shadow:var(--neon-glow);}
-  .small{font-size:14px;color:var(--muted);}
-  table{width:100%;border-collapse:collapse;color:#e9f2f7;}
-  th,td{padding:12px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.05);font-size:14px;}
-  tr:hover{background:rgba(255,255,255,0.03);}
-  th{color:var(--muted);font-weight:600;}
-  .status.pending{color:var(--accent);font-weight:600;}
-  .status.approved{color:var(--ok);font-weight:600;}
-  .status.rejected{color:var(--danger);font-weight:600;}
-  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);z-index:100;}
-  .modal .box{width:840px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:16px;padding:20px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.05);animation:popIn 0.3s ease;}
-  .muted{color:var(--muted);font-size:14px;}
-  .neon{color:var(--accent);text-shadow:0 4px 22px rgba(0,255,231,0.15);}
-
-  /* Animations */
-  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-  @keyframes popIn{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
-  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.8;}}
-  @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr);} .panel-right{display:none;}}
-  @media (max-width:760px){ 
-    .app{flex-direction:column;padding:12px;} 
-    .sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto;padding:12px;} 
-    .cards{grid-template-columns:1fr;} 
-    .main{padding:12px;}
-    .brand{font-size:18px;}
+  * { box-sizing: border-box; transition: all 0.3s ease; }
+  html, body { height: 100%; margin: 0; background: linear-gradient(135deg, var(--bg1), var(--bg2)); font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; color: #dfe7ee; }
+  .app { display: flex; height: 100vh; gap: 24px; padding: 28px; background: radial-gradient(circle at top left, rgba(0,255,231,0.06), transparent); animation: fadeIn 1.2s ease; }
+  .sidebar { width: 280px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 20px; padding: 24px; backdrop-filter: blur(14px); box-shadow: var(--shadow), var(--neon-glow); border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; }
+  .sidebar:hover { transform: scale(1.03); }
+  .brand { font-family: Orbitron, system-ui; font-weight: 700; color: var(--accent); font-size: 26px; letter-spacing: 2px; text-align: center; margin-bottom: 20px; text-shadow: var(--neon-glow); animation: pulse 2.5s infinite; }
+  .nav { display: flex; flex-direction: column; gap: 12px; }
+  .nav .item { padding: 14px; border-radius: 12px; color: #dfe7ee; cursor: pointer; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.3); font-weight: 500; }
+  .nav .item:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,255,231,0.12); background: rgba(255,255,255,0.06); color: var(--accent); }
+  .nav .item.active { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #001; font-weight: 700; box-shadow: 0 8px 32px rgba(0,255,231,0.2); }
+  .who { margin-top: auto; font-size: 14px; color: var(--muted); padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.03); text-align: center; }
+  .login-box { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+  .login-box input { background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.06); padding: 12px; border-radius: 12px; color: #fff; }
+  .login-box input:focus { border-color: var(--accent); outline: none; box-shadow: var(--neon-glow); }
+  .btn { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #001; padding: 12px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+  .btn:hover { transform: scale(1.05); box-shadow: var(--neon-glow); }
+  .btn.ghost { background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--muted); }
+  .btn.ghost:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--neon-glow); }
+  .main { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .search { flex: 1; display: flex; gap: 10px; align-items: center; }
+  .search input { flex: 1; padding: 14px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #fff; }
+  .search input:focus { border-color: var(--accent); outline: none; box-shadow: var(--neon-glow); }
+  .cards { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+  .card { background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 16px; padding: 20px; box-shadow: var(--shadow), var(--neon-glow); border: 1px solid rgba(255,255,255,0.05); }
+  .card:hover { transform: scale(1.02); }
+  .card h3 { margin: 0; font-size: 16px; color: var(--muted); font-weight: 600; }
+  .card .big { font-size: 32px; margin-top: 10px; color: var(--accent); font-weight: 800; text-shadow: var(--neon-glow); }
+  .panel { display: flex; gap: 20px; }
+  .panel-left { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+  .panel-right { width: 420px; }
+  .form-row { display: flex; gap: 12px; }
+  .form-row input, .form-row select { flex: 1; padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); color: #fff; }
+  .form-row input:focus, .form-row select:focus { border-color: var(--accent); outline: none; box-shadow: var(--neon-glow); }
+  .small { font-size: 14px; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; color: #e9f2f7; }
+  th, td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 14px; }
+  tr:hover { background: rgba(255,255,255,0.03); }
+  th { color: var(--muted); font-weight: 600; }
+  .status.pending { color: var(--accent); font-weight: 600; }
+  .status.approved { color: var(--ok); font-weight: 600; }
+  .status.rejected { color: var(--danger); font-weight: 600; }
+  .modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); z-index: 100; backdrop-filter: blur(8px); }
+  .modal .box { width: 840px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 16px; padding: 20px; box-shadow: 0 40px 120px rgba(0,0,0,0.7); border: 1px solid rgba(255,255,255,0.05); animation: popIn 0.3s ease; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .neon { color: var(--accent); text-shadow: 0 4px 22px rgba(0,255,231,0.15); }
+  .loading-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 200; }
+  .loading-overlay.show { display: flex; }
+  .rabbit { width: 80px; height: 80px; background: var(--rabbit-blue); border-radius: 50%; position: relative; animation: hop 1s infinite; }
+  .rabbit::before { content: ''; position: absolute; top: 10px; left: 15px; width: 20px; height: 30px; background: #fff; border-radius: 50% 50% 0 0; transform: rotate(20deg); }
+  .rabbit::after { content: ''; position: absolute; top: 10px; right: 15px; width: 20px; height: 30px; background: #fff; border-radius: 50% 50% 0 0; transform: rotate(-20deg); }
+  .fact { color: var(--accent); font-size: 18px; text-align: center; margin-top: 20px; text-shadow: var(--neon-glow); max-width: 600px; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+  @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+  @media (max-width: 1100px) { .cards { grid-template-columns: repeat(2,1fr); } .panel-right { display: none; } }
+  @media (max-width: 760px) {
+    .app { flex-direction: column; padding: 12px; }
+    .sidebar { width: 100%; flex-direction: row; gap: 12px; overflow: auto; padding: 12px; }
+    .cards { grid-template-columns: 1fr; }
+    .main { padding: 12px; }
+    .brand { font-size: 20px; }
   }
-  .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:14px 20px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6);opacity:0;}
-  .toast.show{opacity:1;animation:popIn 0.3s ease;}
+  .toast { position: fixed; right: 28px; bottom: 28px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); padding: 14px 20px; border-radius: 12px; color: #001; font-weight: 700; box-shadow: 0 8px 30px rgba(0,0,0,0.6); opacity: 0; }
+  .toast.show { opacity: 1; animation: popIn 0.3s ease; }
 </style>
 </head>
 <body>
@@ -233,6 +239,14 @@
   <!-- Modal Placeholder -->
   <div id="modalRoot"></div>
 
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+      <div class="rabbit"></div>
+      <div id="randomFact" class="fact">Loading...</div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div id="toast" style="display:none" class="toast">Saved</div>
 
@@ -240,37 +254,61 @@
 /* ================== CONFIG ================== */
 const API_URL = "https://script.google.com/macros/s/AKfycbyGWm-JwhqKbNak4c86ktUimSyJ1xSB1c4PsbiKInPj1rjX-ziU7KnTeZvJOKdR6VCo7w/exec"; // Your Apps Script URL
 
-/* ================== Utils ================== */
-function $(id){ return document.getElementById(id); }
-function toast(msg, ms=2500){ 
-  const t = $('toast'); 
-  t.innerText = msg; 
-  t.classList.add('show'); 
-  setTimeout(() => t.classList.remove('show'), ms); 
-}
-function nowISO(){ return new Date().toISOString().slice(0,10); }
-function getSession(){ return JSON.parse(localStorage.getItem('session') || 'null'); }
-function setSession(s){ localStorage.setItem('session', JSON.stringify({user: s.user, isAdmin: s.isAdmin})); }
-function clearSession(){ localStorage.removeItem('session'); }
-function escapeHTML(str){ return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[m]); }
+/* Random Facts */
+const facts = [
+  "A group of rabbits is called a fluffle!",
+  "The shortest war in history lasted 38 minutes.",
+  "Octopuses have three hearts and can change color to blend in.",
+  "Honey never spoils; archeologists found edible honey in ancient tombs.",
+  "A single lightning bolt can heat the air to 30,000°C."
+];
 
-/* Simple POST wrapper including credentials from session */
+/* Session State */
+let sessionCredentials = null; // Store username and password temporarily in memory
+
+/* ================== Utils ================== */
+function $(id) { return document.getElementById(id); }
+function toast(msg, ms = 2500) {
+  const t = $('toast');
+  t.innerText = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), ms);
+}
+function nowISO() { return new Date().toISOString().slice(0,10); }
+function getSession() { return JSON.parse(localStorage.getItem('session') || 'null'); }
+function setSession(s) { localStorage.setItem('session', JSON.stringify({ user: s.user, isAdmin: s.isAdmin })); }
+function clearSession() {
+  localStorage.removeItem('session');
+  sessionCredentials = null; // Clear credentials on logout
+}
+function escapeHTML(str) { return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'})[m]); }
+function showLoading() {
+  $('loadingOverlay').classList.add('show');
+  $('randomFact').innerText = facts[Math.floor(Math.random() * facts.length)];
+}
+function hideLoading() { $('loadingOverlay').classList.remove('show'); }
+
+/* Simple POST wrapper */
 async function post(data) {
   console.log('Sending POST request:', data); // Debug: Log request payload
   try {
     const session = getSession();
     if (!session && data.action !== 'login') {
-      console.warn('No session, action:', data.action);
+      console.warn('No session for action:', data.action);
       throw new Error('Not authenticated');
     }
     if (session && data.action !== 'login') {
-      data.username = session.user;
-      // Note: Password prompt is insecure; consider token-based auth in production
-      data.password = prompt('Re-enter password for ' + session.user) || '';
+      if (!sessionCredentials) {
+        console.warn('No credentials stored, prompting for password');
+        const password = prompt('Re-enter password for ' + session.user) || '';
+        sessionCredentials = { username: session.user, password };
+      }
+      data.username = sessionCredentials.username;
+      data.password = sessionCredentials.password;
     }
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain' }, // Avoid preflight for CORS
+      headers: { 'Content-Type': 'text/plain' }, // Avoid CORS preflight
       body: JSON.stringify(data)
     });
     console.log('POST response status:', res.status); // Debug: Log response status
@@ -282,13 +320,15 @@ async function post(data) {
     const result = await res.json();
     console.log('POST response data:', result); // Debug: Log response data
     if (result.error === 'bad auth') {
+      console.warn('Bad auth, clearing session');
       clearSession();
       initSession();
       toast('Session expired, please log in again');
+      sessionCredentials = null; // Clear credentials on bad auth
     }
     return result;
   } catch (err) {
-    console.error('POST error:', err); // Debug: Log any errors
+    console.error('POST error:', err); // Debug: Log errors
     toast('Network error: ' + err.message);
     throw err;
   }
@@ -308,7 +348,7 @@ async function get(url) {
     console.log('GET response data:', result); // Debug: Log response data
     return result;
   } catch (err) {
-    console.error('GET error:', err); // Debug: Log any errors
+    console.error('GET error:', err); // Debug: Log errors
     toast('Network error: ' + err.message);
     throw err;
   }
@@ -354,15 +394,18 @@ initSession();
 $('btnLogin').addEventListener('click', async () => {
   const u = $('loginUser').value.trim();
   const p = $('loginPass').value.trim();
-  console.log('Login attempt:', { username: u, password: p }); // Debug: Log login attempt
+  console.log('Login attempt:', { username: u, password: '****' }); // Debug: Mask password
   if (!u || !p) {
     toast('Enter username and password');
     console.warn('Login failed: Empty username or password');
     return;
   }
+  showLoading();
   try {
     const r = await post({ action: 'login', username: u, password: p });
+    hideLoading();
     if (r.success) {
+      sessionCredentials = { username: u, password: p }; // Store credentials in memory
       setSession({ user: u, isAdmin: r.isAdmin || false });
       $('who').innerText = `Signed as ${u}${r.isAdmin ? ' (admin)' : ''}`;
       $('btnLogin').style.display = 'none';
@@ -376,6 +419,7 @@ $('btnLogin').addEventListener('click', async () => {
       console.warn('Login failed:', r.error);
     }
   } catch (err) {
+    hideLoading();
     toast('Network error');
     console.error('Login error:', err);
   }
@@ -589,7 +633,7 @@ async function loadPendingCount() {
       $('pendingCount').innerText = '--';
     }
   } catch (err) {
-    console.warn('loadPendingCount error', err);
+    console.warn('loadPendingCount error:', err);
   }
 }
 

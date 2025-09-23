@@ -6,7 +6,7 @@
 <title>✨ TAD.INVENTORY</title>
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
 
 <!-- Chart.js for analytics -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -31,7 +31,7 @@
   .app { display: flex; height: 100vh; gap: 24px; padding: 28px; background: radial-gradient(circle at top left, rgba(0,255,231,0.06), transparent); animation: fadeIn 1.2s ease; }
   .sidebar { width: 280px; background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border-radius: 20px; padding: 24px; backdrop-filter: blur(14px); box-shadow: var(--shadow), var(--neon-glow); border: 1px solid rgba(255,255,255,0.04); display: flex; flex-direction: column; }
   .sidebar:hover { transform: scale(1.03); }
-  .brand { font-family: Orbitron, system-ui; font-weight: 700; color: var(--accent); font-size: 26px; letter-spacing: 2px; text-align: center; margin-bottom: 20px; text-shadow: var(--neon-glow); animation: pulse 2.5s infinite; }
+  .brand { font-family: Orbitron, system-ui; font-weight: 700; color: var(--accent); font-size: 22px; letter-spacing: 1px; text-align: center; margin-bottom: 20px; text-shadow: var(--neon-glow); animation: pulse 2.5s infinite; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nav { display: flex; flex-direction: column; gap: 12px; }
   .nav .item { padding: 14px; border-radius: 12px; color: #dfe7ee; cursor: pointer; text-align: center; box-shadow: 0 2px 12px rgba(0,0,0,0.3); font-weight: 500; }
   .nav .item:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,255,231,0.12); background: rgba(255,255,255,0.06); color: var(--accent); }
@@ -74,21 +74,21 @@
   .neon { color: var(--accent); text-shadow: 0 4px 22px rgba(0,255,231,0.15); }
   .loading-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 200; }
   .loading-overlay.show { display: flex; }
-  .rabbit { width: 80px; height: 80px; background: var(--rabbit-blue); border-radius: 50%; position: relative; animation: hop 1s infinite; }
-  .rabbit::before { content: ''; position: absolute; top: 10px; left: 15px; width: 20px; height: 30px; background: #fff; border-radius: 50% 50% 0 0; transform: rotate(20deg); }
-  .rabbit::after { content: ''; position: absolute; top: 10px; right: 15px; width: 20px; height: 30px; background: #fff; border-radius: 50% 50% 0 0; transform: rotate(-20deg); }
+  .rabbit { width: 80px; height: 80px; background: var(--rabbit-blue); border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; position: relative; animation: hop 1s infinite; }
+  .rabbit::before { content: ''; position: absolute; top: -20px; left: 10px; width: 20px; height: 40px; background: var(--rabbit-blue); border-radius: 50%; transform: rotate(20deg); }
+  .rabbit::after { content: ''; position: absolute; top: -20px; right: 10px; width: 20px; height: 40px; background: var(--rabbit-blue); border-radius: 50%; transform: rotate(-20deg); }
   .fact { color: var(--accent); font-size: 18px; text-align: center; margin-top: 20px; text-shadow: var(--neon-glow); max-width: 600px; }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
   @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
   @media (max-width: 1100px) { .cards { grid-template-columns: repeat(2,1fr); } .panel-right { display: none; } }
-  @media (max-width: 760px) {
-    .app { flex-direction: column; padding: 12px; }
-    .sidebar { width: 100%; flex-direction: row; gap: 12px; overflow: auto; padding: 12px; }
-    .cards { grid-template-columns: 1fr; }
-    .main { padding: 12px; }
-    .brand { font-size: 20px; }
+  @media (max-width: 760px) { 
+    .app { flex-direction: column; padding: 12px; } 
+    .sidebar { width: 100%; flex-direction: row; gap: 12px; overflow: auto; padding: 12px; } 
+    .cards { grid-template-columns: 1fr; } 
+    .main { padding: 12px; } 
+    .brand { font-size: 18px; letter-spacing: 0.5px; } 
   }
   .toast { position: fixed; right: 28px; bottom: 28px; background: linear-gradient(90deg, var(--accent), var(--accent-2)); padding: 14px 20px; border-radius: 12px; color: #001; font-weight: 700; box-shadow: 0 8px 30px rgba(0,0,0,0.6); opacity: 0; }
   .toast.show { opacity: 1; animation: popIn 0.3s ease; }
@@ -101,6 +101,7 @@
       <div class="brand">TAD.INVENTORY</div>
       <nav class="nav" id="nav">
         <div class="item active" data-tab="items">📦 Items</div>
+        <div class="item" data-tab="stock">🔍 Stock</div>
         <div class="item" data-tab="inflow">⬆ Inflow</div>
         <div class="item" data-tab="outflow">⬇ Outflow</div>
         <div class="item admin-only" data-tab="requests" style="display:none">⚡ Requests</div>
@@ -161,6 +162,18 @@
             </div>
           </div>
 
+          <!-- Stock Tab -->
+          <div id="tab-stock" class="card tab" style="display:none">
+            <h3>Inventory Stock</h3>
+            <div style="margin-top:14px">
+              <h3 class="muted">Current Stock Levels</h3>
+              <table id="stockTable">
+                <thead><tr><th>Item</th><th>Remaining</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+
           <!-- Inflow Tab -->
           <div id="tab-inflow" class="card tab" style="display:none">
             <h3>Submit Inflow Request</h3>
@@ -212,23 +225,24 @@
 
           <!-- Analytics Tab -->
           <div id="tab-analytics" class="card tab" style="display:none">
-            <h3>Analytics</h3>
+            <h3>Inventory Flow Analytics</h3>
             <canvas id="trendChart" height="180"></canvas>
-            <div class="muted" style="margin-top:8px">Inventory trend analysis</div>
+            <div class="muted" style="margin-top:8px">Inflow, Outflow, and Net Flow (last 5 days)</div>
           </div>
         </div>
 
         <div class="panel-right">
           <div class="card">
             <h3>Analytics Snapshot</h3>
-            <canvas id="trendChart" height="180"></canvas>
-            <div class="muted" style="margin-top:8px">Quick trend overview</div>
+            <canvas id="snapshotChart" height="180"></canvas>
+            <div class="muted" style="margin-top:8px">Quick flow overview</div>
           </div>
           <div class="card" style="margin-top:12px">
             <h3>Quick Actions</h3>
             <div style="display:flex;gap:8px;margin-top:12px">
               <button class="btn" onclick="loadItems()">Refresh Items</button>
               <button class="btn ghost" onclick="loadPending()">Refresh Pending</button>
+              <button class="btn ghost" onclick="loadStock()">Refresh Stock</button>
             </div>
           </div>
         </div>
@@ -252,7 +266,7 @@
 
 <script>
 /* ================== CONFIG ================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbyGWm-JwhqKbNak4c86ktUimSyJ1xSB1c4PsbiKInPj1rjX-ziU7KnTeZvJOKdR6VCo7w/exec"; // Your Apps Script URL
+const API_URL = "https://script.google.com/macros/s/AKfycbzBS3dDRn6mzKeAYLP18vr2EntM-rGUwWAj8166hUOd0QkIrtB8b11iQVO_8Ok-jWn_rA/exec"; // Your Apps Script URL
 
 /* Random Facts */
 const facts = [
@@ -365,6 +379,8 @@ navItems.forEach(n => n.addEventListener('click', () => {
 function showTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.style.display = 'none');
   $(`tab-${tab}`).style.display = 'block';
+  if (tab === 'stock') loadStock();
+  if (tab === 'analytics') loadFlowData();
 }
 showTab('items'); // Initial tab
 
@@ -381,6 +397,7 @@ function initSession() {
     document.querySelectorAll('.admin-only').forEach(el => el.style.display = session.isAdmin ? 'block' : 'none');
     loadItems();
     loadPendingCount();
+    loadFlowData();
   } else {
     $('who').innerText = 'Not signed';
     $('btnLogin').style.display = 'inline-block';
@@ -414,6 +431,7 @@ $('btnLogin').addEventListener('click', async () => {
       toast('Welcome, ' + u);
       await loadItems();
       await loadPendingCount();
+      await loadFlowData();
     } else {
       toast(r.error || 'Login failed');
       console.warn('Login failed:', r.error);
@@ -456,7 +474,6 @@ async function loadItems() {
       sel.innerHTML = itemOptions;
       if (old) sel.value = old;
     });
-    buildTrendChart(items.length);
   } catch (err) {
     toast('Unable to load items');
   }
@@ -483,6 +500,27 @@ $('btnAddItem').addEventListener('click', async () => {
     $('addItemMsg').innerText = 'Network error';
   }
 });
+
+/* ================== STOCK ================== */
+async function loadStock() {
+  try {
+    const r = await get('?action=getStock');
+    if (!r.success) {
+      toast(r.error || 'Failed to load stock');
+      return;
+    }
+    const stock = r.stock || [];
+    const tbody = document.querySelector('#stockTable tbody');
+    tbody.innerHTML = '';
+    stock.forEach(it => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${escapeHTML(it.item)}</td><td>${it.remaining}</td>`;
+      tbody.appendChild(tr);
+    });
+  } catch (err) {
+    toast('Unable to load stock');
+  }
+}
 
 /* ================== INFLOW FORM ================== */
 $('btnAddInRow').addEventListener('click', () => addInRow());
@@ -533,6 +571,7 @@ $('btnSubmitIn').addEventListener('click', async () => {
       addInRow();
       $('inRequestDate').value = '';
       loadPendingCount();
+      loadFlowData();
     } else {
       $('inMsg').innerText = r.error || 'Error';
     }
@@ -592,6 +631,7 @@ $('btnSubmitOut').addEventListener('click', async () => {
       $('outTotal').value = '';
       $('outLocation').value = '';
       loadPendingCount();
+      loadFlowData();
     } else {
       $('outMsg').innerText = r.error || 'Error';
     }
@@ -663,6 +703,7 @@ function renderPending(list) {
           toast(`${action.charAt(0).toUpperCase() + action.slice(1)}ed ${r.processed} rows`);
           loadPending();
           loadPendingCount();
+          loadFlowData();
         } else {
           toast(r.error || 'Error');
         }
@@ -680,6 +721,10 @@ function applySearch(s) {
     const text = tr.innerText.toLowerCase();
     tr.style.display = text.includes(s) ? '' : 'none';
   });
+  document.querySelectorAll('#stockTable tbody tr').forEach(tr => {
+    const text = tr.innerText.toLowerCase();
+    tr.style.display = text.includes(s) ? '' : 'none';
+  });
   document.querySelectorAll('#requestsTable tbody tr').forEach(tr => {
     const text = tr.innerText.toLowerCase();
     tr.style.display = text.includes(s) ? '' : 'none';
@@ -688,36 +733,114 @@ function applySearch(s) {
 
 /* ================== Chart ================== */
 let trendChart = null;
-function buildTrendChart(itemsCount = 0) {
-  const ctx = $('trendChart').getContext('2d');
-  const labels = ['-4d', '-3d', '-2d', '-1d', 'Today'];
-  const data = [itemsCount - 4, itemsCount - 3, itemsCount - 2, itemsCount - 1, itemsCount].map(x => Math.max(0, Math.round(x)));
-  if (trendChart) trendChart.destroy();
-  trendChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Items (Demo)',
-        data,
-        borderColor: 'rgba(0, 255, 231, 0.8)',
-        backgroundColor: 'rgba(0, 255, 231, 0.2)',
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true, title: { display: true, text: 'Item Count', color: '#9aa4b2' } },
-        x: { title: { display: true, text: 'Days', color: '#9aa4b2' } }
-      },
-      plugins: {
-        legend: { labels: { color: '#9aa4b2' } },
-        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#00ffe7', bodyColor: '#fff' }
-      }
+let snapshotChart = null;
+
+async function loadFlowData() {
+  try {
+    const r = await get('?action=getFlowData');
+    if (!r.success) {
+      toast(r.error || 'Failed to load flow data');
+      console.warn('Failed to load flow data:', r.error);
+      return;
     }
-  });
+    const { labels, inflows, outflows, totalFlow } = r.flow;
+    console.log('Flow data loaded:', { labels, inflows, outflows, totalFlow }); // Debug
+
+    // Main Analytics Chart
+    if (trendChart) trendChart.destroy();
+    trendChart = new Chart($('trendChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Inflow',
+            data: inflows,
+            borderColor: 'rgba(0, 255, 231, 0.8)',
+            backgroundColor: 'rgba(0, 255, 231, 0.2)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Outflow',
+            data: outflows,
+            borderColor: 'rgba(255, 107, 107, 0.8)',
+            backgroundColor: 'rgba(255, 107, 107, 0.2)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Net Flow',
+            data: totalFlow,
+            borderColor: 'rgba(107, 92, 255, 0.8)',
+            backgroundColor: 'rgba(107, 92, 255, 0.2)',
+            fill: true,
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Quantity', color: '#9aa4b2' } },
+          x: { title: { display: true, text: 'Date', color: '#9aa4b2' } }
+        },
+        plugins: {
+          legend: { labels: { color: '#9aa4b2' } },
+          tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#00ffe7', bodyColor: '#fff' }
+        }
+      }
+    });
+
+    // Snapshot Chart (Right Panel)
+    if (snapshotChart) snapshotChart.destroy();
+    snapshotChart = new Chart($('snapshotChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Inflow',
+            data: inflows,
+            borderColor: 'rgba(0, 255, 231, 0.8)',
+            backgroundColor: 'rgba(0, 255, 231, 0.2)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Outflow',
+            data: outflows,
+            borderColor: 'rgba(255, 107, 107, 0.8)',
+            backgroundColor: 'rgba(255, 107, 107, 0.2)',
+            fill: true,
+            tension: 0.4
+          },
+          {
+            label: 'Net Flow',
+            data: totalFlow,
+            borderColor: 'rgba(107, 92, 255, 0.8)',
+            backgroundColor: 'rgba(107, 92, 255, 0.2)',
+            fill: true,
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, title: { display: true, text: 'Quantity', color: '#9aa4b2' } },
+          x: { title: { display: true, text: 'Date', color: '#9aa4b2' } }
+        },
+        plugins: {
+          legend: { labels: { color: '#9aa4b2' } },
+          tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#00ffe7', bodyColor: '#fff' }
+        }
+      }
+    });
+  } catch (err) {
+    toast('Unable to load flow data');
+    console.error('loadFlowData error:', err);
+  }
 }
 </script>
 </body>

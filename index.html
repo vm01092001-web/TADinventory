@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>✨ NextGen Inventory</title>
+<title>✨ TAD.INVENTORY</title>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -23,43 +23,53 @@
     --danger:#ff6b6b;
     --radius:16px;
     --shadow:0 12px 40px rgba(0,0,0,0.6);
+    --neon-glow: 0 0 10px var(--accent), 0 0 20px var(--accent-2);
   }
-  *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:linear-gradient(120deg,var(--bg1),var(--bg2));font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;}
-  .app{display:flex;height:100vh;gap:24px;padding:28px}
-  .sidebar{width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:22px;backdrop-filter: blur(12px);box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column}
-  .brand{font-family:Orbitron,system-ui;font-weight:700;color:var(--accent);font-size:20px;letter-spacing:1px;text-align:center;margin-bottom:18px}
+  *{box-sizing:border-box;transition: all 0.3s ease;}
+  html,body{height:100%;margin:0;background:linear-gradient(120deg,var(--bg1),var(--bg2));font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;color:#dfe7ee;}
+  .app{display:flex;height:100vh;gap:24px;padding:28px;background:radial-gradient(circle at top left, rgba(0,255,231,0.05), transparent);}
+  .sidebar{width:260px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:20px;padding:22px;backdrop-filter: blur(12px);box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.03);display:flex;flex-direction:column;transition:transform 0.3s;}
+  .sidebar:hover{transform:scale(1.02);}
+  .brand{font-family:Orbitron,system-ui;font-weight:700;color:var(--accent);font-size:20px;letter-spacing:1px;text-align:center;margin-bottom:18px;text-shadow:var(--neon-glow);}
   .nav{display:flex;flex-direction:column;gap:10px}
-  .nav .item{padding:12px;border-radius:12px;color:#dfe7ee;cursor:pointer;transition:all .18s; text-align:center}
-  .nav .item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,255,231,0.06);background:rgba(255,255,255,0.03)}
-  .nav .item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,255,231,0.15)}
+  .nav .item{padding:12px;border-radius:12px;color:#dfe7ee;cursor:pointer;transition:all .18s; text-align:center;box-shadow:0 2px 10px rgba(0,0,0,0.3);}
+  .nav .item:hover{transform:translateY(-4px);box-shadow:0 8px 30px rgba(0,255,231,0.06);background:rgba(255,255,255,0.03);color:var(--accent);}
+  .nav .item.active{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,255,231,0.15);text-shadow:none;}
   .who{margin-top:auto;font-size:13px;color:var(--muted);padding-top:12px;border-top:1px solid rgba(255,255,255,0.02)}
   .login-box{display:flex;flex-direction:column;gap:8px;margin-top:10px}
-  .login-box input{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:10px;color:#fff}
-  .btn{background:var(--accent);color:#001;padding:10px;border-radius:10px;border:none;font-weight:700;cursor:pointer}
+  .login-box input{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.03);padding:10px;border-radius:10px;color:#fff;transition:border-color 0.3s;}
+  .login-box input:focus{border-color:var(--accent);outline:none;}
+  .btn{background:var(--accent);color:#001;padding:10px;border-radius:10px;border:none;font-weight:700;cursor:pointer;transition:transform 0.2s, box-shadow 0.2s;}
+  .btn:hover{transform:scale(1.05);box-shadow:var(--neon-glow);}
   .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);}
   .main{flex:1;display:flex;flex-direction:column;gap:18px}
   .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .search{flex:1;display:flex;gap:8px;align-items:center}
-  .search input{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff}
+  .search input{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff;transition:border-color 0.3s;}
+  .search input:focus{border-color:var(--accent);outline:none;}
   .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
-  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:var(--shadow), var(--neon-glow);border:1px solid rgba(255,255,255,0.03);transition:transform 0.3s;}
+  .card:hover{transform:scale(1.02);}
   .card h3{margin:0;font-size:14px;color:var(--muted);font-weight:600}
-  .card .big{font-size:28px;margin-top:8px;color:var(--accent);font-weight:800}
+  .card .big{font-size:28px;margin-top:8px;color:var(--accent);font-weight:800;text-shadow:var(--neon-glow);}
   .panel{display:flex;gap:18px}
   .panel-left{flex:1;display:flex;flex-direction:column;gap:12px}
   .panel-right{width:420px}
   .form-row{display:flex;gap:10px}
-  .form-row input,.form-row select{flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);color:#fff}
+  .form-row input,.form-row select{flex:1;padding:10px;border-radius:10px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);color:#fff;transition:border-color 0.3s;}
+  .form-row input:focus,.form-row select:focus{border-color:var(--accent);outline:none;}
   .small{font-size:13px;color:var(--muted)}
   table{width:100%;border-collapse:collapse;color:#e9f2f7}
-  th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px}
+  th,td{padding:10px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03);font-size:14px;transition:background 0.3s;}
+  tr:hover{background:rgba(255,255,255,0.02);}
   th{color:var(--muted);font-weight:600}
   .status.pending{color:var(--accent)}
   .status.approved{color:var(--ok)}
   .status.rejected{color:var(--danger)}
-  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:60}
-  .modal .box{width:840px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.03)}
+  .modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:60;transition:opacity 0.3s;}
+  .modal .box{width:840px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:0 40px 120px rgba(0,0,0,0.7);border:1px solid rgba(255,255,255,0.03);transform:scale(0.95);transition:transform 0.3s;}
+  .modal.show .box{transform:scale(1);}
   .muted{color:var(--muted);font-size:13px}
   .neon{color:var(--accent);text-shadow:0 4px 22px rgba(0,255,231,0.12)}
   @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} .panel-right{display:none} }
@@ -69,14 +79,15 @@
     .cards{grid-template-columns:repeat(1,1fr)} 
     .main{padding:12px}
   }
-  .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:12px 16px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+  .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:12px 16px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6);opacity:0;transition:opacity 0.3s;}
+  .toast.show{opacity:1;}
 </style>
 </head>
 <body>
   <div class="app">
     <!-- SIDEBAR -->
     <aside class="sidebar">
-      <div class="brand">NEON.INVENTORY</div>
+      <div class="brand">TAD.INVENTORY</div>
       <nav class="nav" id="nav">
         <div class="item active" data-tab="items">📦 Items</div>
         <div class="item" data-tab="inflow">⬆ Inflow</div>
@@ -197,6 +208,13 @@
               </table>
             </div>
           </div>
+
+          <!-- Analytics Tab -->
+          <div id="tab-analytics" class="card tab" style="display:none">
+            <h3>Analytics</h3>
+            <canvas id="trendChart" height="180"></canvas>
+            <div class="muted" style="margin-top:8px">Quick trend demo</div>
+          </div>
         </div>
 
         <div class="panel-right">
@@ -226,11 +244,11 @@
 
 <script>
 /* ================== CONFIG ================== */
-const API_URL = "https://script.google.com/macros/s/AKfycbyGWm-JwhqKbNak4c86ktUimSyJ1xSB1c4PsbiKInPj1rjX-ziU7KnTeZvJOKdR6VCo7w/exec"; // Replace with your deployed Apps Script /exec URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxqOyTq7Vz6oRkbIWcvi3R1kpOhtXSsVAzugJmBaIzhn1ZAvfzGHgkz5lajaHgB3cKDVw/exec"; // Replace with your deployed Apps Script /exec URL
 
 /* ================== Utils ================== */
 function $(id){ return document.getElementById(id); }
-function toast(msg, ms=2500){ const t=$('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',ms); }
+function toast(msg, ms=2500){ const t=$('toast'); t.innerText=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),ms); }
 function nowISO(){ return new Date().toISOString().slice(0,10); }
 function getSession(){ return JSON.parse(localStorage.getItem('session')||'null'); }
 function setSession(s){ localStorage.setItem('session', JSON.stringify({user: s.user, isAdmin: s.isAdmin})); } // Avoid storing password
@@ -249,7 +267,7 @@ async function post(data){
     }
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'text/plain'},
       body: JSON.stringify(data)
     });
     const result = await res.json();
@@ -530,76 +548,4 @@ function renderPending(list){
       <td class="status ${req.status && req.status.toLowerCase()}">${escapeHTML(req.status)}</td>
       <td>
         <button class="btn" data-id="${escapeHTML(req.requestId)}" data-action="approve">Approve</button>
-        <button class="btn ghost" data-id="${escapeHTML(req.requestId)}" data-action="reject">Reject</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  });
-  tbody.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', async () => {
-      const id = btn.dataset.id, action = btn.dataset.action;
-      try{
-        const r = await post({action: 'actOnRequest', requestId: id, decision: action});
-        if(r.success){
-          toast(`${action.charAt(0).toUpperCase() + action.slice(1)}ed ${r.processed} rows`);
-          loadPending();
-          loadPendingCount();
-        } else {
-          toast(r.error || 'Error');
-        }
-      }catch(err){
-        toast('Network error');
-      }
-    });
-  });
-}
-
-/* ================== Search & Filters ================== */
-function applySearch(s){
-  s = (s || '').toLowerCase();
-  document.querySelectorAll('#itemsTable tbody tr').forEach(tr => {
-    const text = tr.innerText.toLowerCase();
-    tr.style.display = text.includes(s) ? '' : 'none';
-  });
-  document.querySelectorAll('#requestsTable tbody tr').forEach(tr => {
-    const text = tr.innerText.toLowerCase();
-    tr.style.display = text.includes(s) ? '' : 'none';
-  });
-}
-
-/* ================== Chart ================== */
-let trendChart = null;
-function buildTrendChart(itemsCount = 0){
-  const ctx = $('trendChart').getContext('2d');
-  const labels = ['-4d', '-3d', '-2d', '-1d', 'Today'];
-  const data = [itemsCount - 4, itemsCount - 3, itemsCount - 2, itemsCount - 1, itemsCount].map(x => Math.max(0, Math.round(x)));
-  if(trendChart) trendChart.destroy();
-  trendChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Items (Demo)',
-        data,
-        borderColor: 'rgba(0, 255, 231, 0.8)',
-        backgroundColor: 'rgba(0, 255, 231, 0.2)',
-        fill: true,
-        tension: 0.4
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true, title: { display: true, text: 'Item Count', color: '#9aa4b2' } },
-        x: { title: { display: true, text: 'Days', color: '#9aa4b2' } }
-      },
-      plugins: {
-        legend: { labels: { color: '#9aa4b2' } },
-        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleColor: '#00ffe7', bodyColor: '#fff' }
-      }
-    }
-  });
-}
-</script>
-</body>
-</html>
+        <button class="btn ghost

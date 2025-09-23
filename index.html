@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>TAD INVENTORY </title>
+<title>✨ NextGen Inventory</title>
 
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
@@ -42,7 +42,7 @@
   .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .search{flex:1;display:flex;gap:8px;align-items:center}
   .search input{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.03);color:#fff}
-  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
   .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;padding:18px;box-shadow:var(--shadow);border:1px solid rgba(255,255,255,0.03)}
   .card h3{margin:0;font-size:14px;color:var(--muted);font-weight:600}
   .card .big{font-size:28px;margin-top:8px;color:var(--accent);font-weight:800}
@@ -63,7 +63,12 @@
   .muted{color:var(--muted);font-size:13px}
   .neon{color:var(--accent);text-shadow:0 4px 22px rgba(0,255,231,0.12)}
   @media (max-width:1100px){ .cards{grid-template-columns:repeat(2,1fr)} .panel-right{display:none} }
-  @media (max-width:760px){ .app{flex-direction:column;padding:12px} .sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto} .cards{grid-template-columns:repeat(1,1fr)} .main{padding:12px} }
+  @media (max-width:760px){ 
+    .app{flex-direction:column;padding:12px} 
+    .sidebar{width:100%;flex-direction:row;gap:12px;overflow:auto} 
+    .cards{grid-template-columns:repeat(1,1fr)} 
+    .main{padding:12px}
+  }
   .toast{position:fixed;right:28px;bottom:28px;background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:12px 16px;border-radius:12px;color:#001;font-weight:700;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
 </style>
 </head>
@@ -114,11 +119,6 @@
           <h3>Pending Requests</h3>
           <div class="big" id="pendingCount">--</div>
           <div class="muted">Requests awaiting approval</div>
-        </div>
-        <div class="card">
-          <h3>Nice Score</h3>
-          <div class="big">100%</div>
-          <div class="muted">UI: sexy mode enabled</div>
         </div>
       </div>
 
@@ -226,7 +226,7 @@
 
 <script>
 /* ================== CONFIG ================== */
-const API_URL = "https://script.google.com/macros/s/AKfycby_bvI3Yyq43EmXISdjEAXOLcn7ZgUIz1SXJP4mCyqBQFick9wYynipivaAkJbd4dwz/exec"; // Replace with your deployed Apps Script /exec URL
+const API_URL = "https://script.google.com/macros/s/AKfycbxERiBOvNXAuC7cg1lp3sp6aTU7e7hw_Eqk8fsRuZ4xJpznuu_psWK_YUrdzngExbAN/exec"; // Replace with your deployed Apps Script /exec URL
 
 /* ================== Utils ================== */
 function $(id){ return document.getElementById(id); }
